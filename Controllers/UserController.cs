@@ -5,25 +5,26 @@ namespace Restaurant.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class UsersController : ControllerBase{
-    private readonly UserContext _context;
-
-    public UsersController(UserContext userContext){
-        _context = userContext;
-    }
+public class UsersController(UserContext userContext) : ControllerBase{
+    private readonly UserContext _context = userContext;
 
     [HttpGet]
-    public List<User> GetAllUser(){
-        
-        return [.. _context.Users];
+    public ActionResult<List<User>> GetAllUser(){
+        return Ok(_context.Users.ToList());
     }
 }
 
 [ApiController]
 [Route("[controller]")]
-public class UserController : ControllerBase{
+public class UserController(UserContext userContext) : ControllerBase{
+    private readonly UserContext _context = userContext;
+
     [HttpGet("{Id:long}")]
-    public List<User> GetUser(long Id){
-        return [new User(){Id = Id, UserName = "WenTee", Password = "IDK"}];
+    public ActionResult<User> GetUser(long Id){
+        User? result = _context.Users.Where((item) => item.Id == Id).FirstOrDefault();
+        if (result == null){
+            return NotFound();
+        }
+        return Ok(result);
     }
 }
