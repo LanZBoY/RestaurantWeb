@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace Restaurant.Models;
 
@@ -19,9 +20,13 @@ namespace Restaurant.Models;
 [Table(name: "User")]
 public class User{
     [Key]
+    [JsonIgnore]
     public Guid? Id{get; set;}
     public string? UserName {get; set;}
+    [JsonIgnore]
     public string? Password{get; set;}
+    public string? Mail{get; set;}
+    [JsonIgnore]
     public string? Role{get; set;}
 }
 

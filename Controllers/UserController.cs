@@ -19,14 +19,13 @@ public class UserController(UserContext userContext, IConfiguration configuratio
     public ActionResult Login(LoginViewUser user){
         // 資料庫搜尋邏輯
         User? findResult = _context.Users.Where((item) => (item.UserName == user.UserName) & (item.Password == user.Password)).FirstOrDefault();
-        if (findResult == null) return Unauthorized();
-
+        if (findResult == null) return NotFound();
+        
         var jwtTokenHandler = new JwtSecurityTokenHandler();
         var jwtSetting = _configuration.GetSection("JwtSetting").Get<JwtSetting>();
         var tokenDescriptor = new SecurityTokenDescriptor{
             Subject = new ClaimsIdentity(new Claim[]{
-                new(ClaimTypes.NameIdentifier, findResult.Id.ToString()),
-                new(ClaimTypes.Name, findResult.UserName),
+                new(ClaimTypes.Name, findResult.Id.ToString()),
                 new(ClaimTypes.Role, findResult.Role),
             }),
             Expires = DateTime.UtcNow.AddHours(1),
@@ -40,7 +39,8 @@ public class UserController(UserContext userContext, IConfiguration configuratio
     [HttpGet]
     [Authorize("User")]
     public ActionResult GetUser(){
-        string username = User.Identity.Name;
-        return Ok(username);
+        Guid uuid =  Guid.Parse(User.Identity.Name);
+        User? info = _context.Users.Where((item) => item.Id == uuid).FirstOrDefault();
+        return Ok(info);
     }
 }
