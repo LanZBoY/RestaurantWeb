@@ -17,17 +17,17 @@ namespace Restaurant.Models;
 
 
 [Table(name: "User")]
-public class MgmtViewUser{
+public class User{
     [Key]
-    public long Id{get; set;}
+    public Guid? Id{get; set;}
     public string? UserName {get; set;}
     public string? Password{get; set;}
-    public string? Mail{get; set;}
+    public string? Role{get; set;}
 }
 
 public class LoginViewUser{
     [Required]
-    public string? UserName{get; set;}
+    public required string UserName{get; set;}
     [Required]
-    public string? Password{get; set;}
+    public required string Password{get; set;}
 }
