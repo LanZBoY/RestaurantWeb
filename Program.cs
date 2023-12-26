@@ -53,13 +53,8 @@ builder.Services.AddSwaggerGen((opt) => {
         Version = "1.0",
         Title = "餐廳API",
     });
-    // opt.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme{
-    //     Name = "Auhorization",
-    //     Type = SecuritySchemeType.Http,
-    //     In = 
-    // });
 });
-builder.Services.AddDbContext<UserContext>(opt =>{
+builder.Services.AddDbContext<RestaurantContext>(opt =>{
     // 使用PostgreSql
     opt.UseNpgsql(connectionString: builder.Configuration.GetConnectionString("DefaultConnection"));
 });

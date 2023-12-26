@@ -4,23 +4,12 @@ using System.Text.Json.Serialization;
 
 namespace Restaurant.Models;
 
-// 可以透過這個Atrribute指定Table跟Schema
-// Reference : https://medium.com/@pawel.gerr/entity-framework-core-changing-database-schema-at-runtime-dcf1211768c6
-// [Table(name: "User")]
-// public class User{
-//     [Key]
-//     public long Id{get; set;}
-//     public string? UserName {get; set;}
-//     public string? Password{get; set;}
-
-//     public string? Mail{get; set;}
-// }
-
 
 [Table(name: "User")]
-public class User{
+public class UserModel{
     [Key]
     [JsonIgnore]
+    [Column("uId")]
     public Guid? Id{get; set;}
     public string? UserName {get; set;}
     [JsonIgnore]

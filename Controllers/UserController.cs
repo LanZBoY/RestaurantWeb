@@ -11,14 +11,14 @@ namespace Restaurant.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class UserController(UserContext userContext, IConfiguration configuration) : ControllerBase{
-    private readonly UserContext _context = userContext;
+public class UserController(RestaurantContext restaurantContext, IConfiguration configuration) : ControllerBase{
+    private readonly RestaurantContext _context = restaurantContext;
     // 透過Dependency Injection的方式取得Configuration
     private readonly IConfiguration _configuration = configuration;
     [HttpPost("Login")]
     public ActionResult Login(LoginViewUser user){
         // 資料庫搜尋邏輯
-        User? findResult = _context.Users.Where((item) => (item.UserName == user.UserName) & (item.Password == user.Password)).FirstOrDefault();
+        UserModel? findResult = _context.Users.Where((item) => (item.UserName == user.UserName) & (item.Password == user.Password)).FirstOrDefault();
         if (findResult == null) return NotFound();
         
         var jwtTokenHandler = new JwtSecurityTokenHandler();
@@ -40,7 +40,7 @@ public class UserController(UserContext userContext, IConfiguration configuratio
     [Authorize("User")]
     public ActionResult GetUser(){
         Guid uuid =  Guid.Parse(User.Identity.Name);
-        User? info = _context.Users.Where((item) => item.Id == uuid).FirstOrDefault();
+        UserModel? info = _context.Users.Where((item) => item.Id == uuid).FirstOrDefault();
         return Ok(info);
     }
 }
