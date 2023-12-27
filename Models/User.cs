@@ -1,6 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Restaurant.Models;
 
@@ -19,14 +20,15 @@ public class UserModel{
     public string? Role{get; set;}
 }
 
-public class LoginViewUser{
-    [Required]
+public class UserLoginDTO{
+
+    [Required, FromHeader]
     public required string UserName{get; set;}
-    [Required]
+    [Required, FromHeader]
     public required string Password{get; set;}
 }
 
-public class RegisterViewUser{
+public class UserRegisterDTO{
     [Required]
     public required string UserName {get; set;}
     [Required]
