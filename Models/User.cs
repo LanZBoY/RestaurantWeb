@@ -25,3 +25,12 @@ public class LoginViewUser{
     [Required]
     public required string Password{get; set;}
 }
+
+public class RegisterViewUser{
+    [Required]
+    public required string UserName {get; set;}
+    [Required]
+    public required string Password {get; set;}
+    [Required]
+    public required string Mail{get; set;}
+}

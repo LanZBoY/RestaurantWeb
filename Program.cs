@@ -1,6 +1,7 @@
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -20,12 +21,14 @@ if (jwtSetting != null){
         opt.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
     })
     .AddJwtBearer((opt) => {
-        opt.TokenValidationParameters = new TokenValidationParameters{
-            ValidateIssuerSigningKey = true,
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(jwtSetting.Secret)),
-            ValidateIssuer = false,
-            ValidateAudience = false
-        };
+        if (jwtSetting.Secret != null){
+            opt.TokenValidationParameters = new TokenValidationParameters{
+                ValidateIssuerSigningKey = true,
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(jwtSetting.Secret)),
+                ValidateIssuer = false,
+                ValidateAudience = false
+            };
+        }
     });
 
     builder.Services.AddAuthorization((opt) =>{

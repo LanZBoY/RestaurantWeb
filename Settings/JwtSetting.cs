@@ -2,5 +2,5 @@
 
 namespace Restaurant.Settings;
 public class JwtSetting{
-    public string Secret{get; set;}
+    public string? Secret{get; set;}
 }

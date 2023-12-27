@@ -1,8 +1,12 @@
 using System.IdentityModel.Tokens.Jwt;
+using System.Net;
 using System.Security.Claims;
 using System.Text;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http.Features;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Restaurant.Models;
 using Restaurant.Settings;
@@ -13,12 +17,14 @@ namespace Restaurant.Controllers;
 [Route("[controller]")]
 public class UserController(RestaurantContext restaurantContext, IConfiguration configuration) : ControllerBase{
     private readonly RestaurantContext _context = restaurantContext;
+    private readonly DbSet<UserModel> UserTable = restaurantContext.Users;
     // 透過Dependency Injection的方式取得Configuration
     private readonly IConfiguration _configuration = configuration;
     [HttpPost("Login")]
     public ActionResult Login(LoginViewUser user){
         // 資料庫搜尋邏輯
-        UserModel? findResult = _context.Users.Where((item) => (item.UserName == user.UserName) & (item.Password == user.Password)).FirstOrDefault();
+        UserModel? findResult = UserTable.Where((item) => (item.UserName == user.UserName) & (item.Password == user.Password)).FirstOrDefault();
+        
         if (findResult == null) return NotFound();
         
         var jwtTokenHandler = new JwtSecurityTokenHandler();
@@ -36,11 +42,36 @@ public class UserController(RestaurantContext restaurantContext, IConfiguration 
         return Ok(new UserRole{Token = tokenString, Role = findResult.Role});
     }
 
+    [HttpPost("Register")]
+    public ActionResult<RegisterViewUser> RegisterUser(RegisterViewUser userinfo){
+
+        if (UserTable.Any((item) => item.UserName == userinfo.UserName)){
+            return BadRequest(new{
+                ErrorMessage = "UserName has exist!"
+            });
+        }
+
+        UserTable.Add(new UserModel{
+            UserName = userinfo.UserName,
+            Password = userinfo.Password,
+            Mail = userinfo.Mail,
+            Role = "User"
+        });
+
+        if(_context.SaveChanges() <= 0){
+            return BadRequest(new{
+                ErrorMessage = "Data not change"
+            });
+        }
+
+        return Created();
+    }
+
     [HttpGet]
     [Authorize("User")]
     public ActionResult GetUser(){
         Guid uuid =  Guid.Parse(User.Identity.Name);
-        UserModel? info = _context.Users.Where((item) => item.Id == uuid).FirstOrDefault();
+        UserModel? info = UserTable.Where((item) => item.Id == uuid).FirstOrDefault();
         return Ok(info);
     }
 }
