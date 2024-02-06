@@ -18,7 +18,7 @@ public class UserController(RestaurantContext restaurantContext) : ControllerBas
     // private readonly RestaurantContext _context = restaurantContext;
     private readonly DbSet<UserModel> UserTable = restaurantContext.Users;
     [HttpGet]
-    [Authorize("User")]
+    [Authorize(policy:"All")]
     public ActionResult GetUser(){
         Guid uuid =  Guid.Parse(User.Identity.Name);
         UserModel? info = UserTable.Where((item) => item.Id == uuid).FirstOrDefault();

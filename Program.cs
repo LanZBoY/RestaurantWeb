@@ -42,6 +42,7 @@ builder.Services.AddAuthorization((opt) =>{
     opt.AddPolicy("All", new AuthorizationPolicyBuilder()
     .RequireRole(["User", "Admin"])
     .AddAuthenticationSchemes(JwtBearerDefaults.AuthenticationScheme)
+    .RequireAuthenticatedUser()
     .Build());
 });
 
