@@ -1,0 +1,27 @@
+version: "1.0"
+
+
+services:
+  pgadmin:
+    image: dpage/pgadmin4
+    ports: 
+      - "8080:80"
+    links:
+      - restaurant_db
+    environment:
+      - "PGADMIN_DEFAULT_EMAIL=superjimalex@gmail.com"
+      - "PGADMIN_DEFAULT_PASSWORD=WenTee1215"
+  
+  restaurant_db:
+    image: postgres:16.2
+    ports:
+      - "5001:5432"
+    environment:
+    - "POSTGRES_PASSWORD=WenTee1215"
+
+  backend_service:
+    build: .
+    ports:
+      - "8001:5000"
+    links:
+      - restaurant_db

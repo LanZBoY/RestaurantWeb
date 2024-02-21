@@ -10,7 +10,6 @@ namespace Restaurant.Controllers;
 [Authorize(policy:"Admin")]
 public class MgmtController(RestaurantContext restaurantContext) : ControllerBase{
     private readonly RestaurantContext _context = restaurantContext;
-
     [HttpGet("Users")]
     public ActionResult<List<UserModel>> GetAllUser(){
         return Ok(_context.Users.ToList());
