@@ -52,12 +52,12 @@ private readonly RestaurantContext _context = restaurantContext;
         
         if (findResult == null || findResult.Id == null || findResult.Role == null) return NotFound();
         var jwtTokenHandler = new JwtSecurityTokenHandler();
-        string secret = _configuration["JwtSetting:Secret"];
+        string secret = _configuration["JwtSetting:Secret"]!;
         var tokenDescriptor = new SecurityTokenDescriptor{
-            Subject = new ClaimsIdentity(new Claim[]{
-                new(ClaimTypes.Name, findResult.Id.ToString()),
+            Subject = new ClaimsIdentity([
+                new(ClaimTypes.Name, findResult.Id.ToString()!),
                 new(ClaimTypes.Role, findResult.Role),
-            }),
+            ]),
             Expires = DateTime.UtcNow.AddHours(1),
             SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(Encoding.ASCII.GetBytes(secret)), SecurityAlgorithms.HmacSha256Signature)
         };
