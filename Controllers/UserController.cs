@@ -79,14 +79,16 @@ private readonly RestaurantContext _context = restaurantContext;
         select new {
             u.UserName,
             u.Mail,
-            ratingHistoy = (from rating in UserRestaurantRateTable
-            join restaurant in RestaurantTable on rating.RestaurantId equals restaurant.Id
-            where rating.UserId == uuid
-            select new {
-                restaurant.Name,
-                restaurant.Desc,
-                rating.rating
-            }).ToList()
+                ratingHistoy = (
+                from rating in UserRestaurantRateTable
+                join restaurant in RestaurantTable on rating.RestaurantId equals restaurant.Id
+                where rating.UserId == uuid
+                select new {
+                    restaurant.Name,
+                    restaurant.Desc,
+                    rating.rating
+                })
+                .ToList()
         };
         return Ok(info.FirstOrDefault());
     }

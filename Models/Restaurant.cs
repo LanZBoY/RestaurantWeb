@@ -14,6 +14,9 @@ public class RestaurantModel{
     public string? Desc{get; set;}
 }
 
+public class SearchResaurantDTO{
+    public string? Name {get; set;}
+}
 public class AddRestaurantDTO{
     [Required]
     public required string Name{get; set;}
