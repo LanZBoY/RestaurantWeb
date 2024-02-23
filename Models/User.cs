@@ -8,9 +8,8 @@ namespace Restaurant.Models;
 
 [Table(name: "User")]
 public class UserModel{
-    [Key]
-    [JsonIgnore]
-    [Column("uId")]
+    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+    [Key, Column("uId"), JsonIgnore]
     public Guid? Id{get; set;}
     public string? UserName {get; set;}
     [JsonIgnore]

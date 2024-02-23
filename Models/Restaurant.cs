@@ -1,4 +1,5 @@
 
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
 
@@ -6,19 +7,27 @@ namespace Restaurant.Models;
 
 [Table(name:"Restaurant")]
 public class RestaurantModel{
-    [Column("rId")]
+    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+    [Key, Column("rId")]
     public Guid? Id{get; set;}
     public string? Name{get; set;}
     public string? Desc{get; set;}
+}
+
+public class AddRestaurantDTO{
+    [Required]
+    public required string Name{get; set;}
+    [Required]
+    public required string Desc{get; set;}
 }
 
 
 [Table(name:"UserRestaurantRate")]
 [Keyless]
 public class UserRestaurantRateModel{
-    [Column("uId")]
+    [Column("uId"), ForeignKey("User.uId")]
     public Guid? UserId {get; set;}
-    [Column("rId")]
+    [Column("rId"), ForeignKey("Restaurant.rId")]
     public Guid? RestaurantId {get; set;}
 
     public float rating {get; set;}

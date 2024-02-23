@@ -12,15 +12,13 @@ using Restaurant.Models;
 namespace Restaurant.Migrations
 {
     [DbContext(typeof(RestaurantContext))]
-    [Migration("20240219130901_restaurant_migrations")]
-    partial class restaurant_migrations
+    [Migration("20240223031643_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
-            modelBuilder
-                .HasPostgresExtension("uuid-ossp");
             modelBuilder
                 .HasAnnotation("ProductVersion", "8.0.0")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
@@ -50,8 +48,7 @@ namespace Restaurant.Migrations
                     b.Property<Guid?>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid")
-                        .HasColumnName("uId")
-                        .HasDefaultValueSql("uuid_generate_v4()");
+                        .HasColumnName("uId");
 
                     b.Property<string>("Mail")
                         .HasColumnType("text");
@@ -74,8 +71,7 @@ namespace Restaurant.Migrations
                 {
                     b.Property<Guid?>("RestaurantId")
                         .HasColumnType("uuid")
-                        .HasColumnName("rId")
-                        .HasDefaultValueSql("uuid_generate_v4()");
+                        .HasColumnName("rId");
 
                     b.Property<Guid?>("UserId")
                         .HasColumnType("uuid")

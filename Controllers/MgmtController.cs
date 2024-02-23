@@ -20,8 +20,11 @@ public class MgmtController(RestaurantContext restaurantContext) : ControllerBas
         return Ok(_context.Restaurants.ToList());
     }
     [HttpPost("Restaurants")]
-    public ActionResult CreateRestaurant(RestaurantModel restaurant){
-        _context.Restaurants.Add(restaurant);
+    public ActionResult CreateRestaurant(AddRestaurantDTO addRestaurant){
+        _context.Restaurants.Add(new RestaurantModel{
+            Name = addRestaurant.Name,
+            Desc = addRestaurant.Desc
+        });
         if(_context.SaveChanges() <= 0){
             return BadRequest(new{
                 ErrorMessage = "Data not change"

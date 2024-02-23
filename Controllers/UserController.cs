@@ -17,6 +17,8 @@ namespace Restaurant.Controllers;
 public class UserController(RestaurantContext restaurantContext, IConfiguration configuration) : ControllerBase{
 private readonly RestaurantContext _context = restaurantContext;
     private readonly DbSet<UserModel> UserTable = restaurantContext.Users;
+    private readonly DbSet<RestaurantModel> RestaurantTable = restaurantContext.Restaurants;
+    private readonly DbSet<UserRestaurantRateModel> UserRestaurantRateTable = restaurantContext.UserRestaurantRates;
     private readonly IConfiguration _configuration = configuration;
 
     [HttpPost("Register")]
@@ -74,5 +76,32 @@ private readonly RestaurantContext _context = restaurantContext;
         Guid uuid =  Guid.Parse(User.Identity.Name);
         UserModel? info = UserTable.Where((item) => item.Id == uuid).FirstOrDefault();
         return Ok(info);
+    }
+
+    [HttpPost("Rate/{rId:guid}/{rate:float}")]
+    [Authorize(policy:"All")]
+    public ActionResult RateRestaurant(Guid rId, float rate){
+        if (User.Identity == null || User.Identity.Name == null){
+            return BadRequest("Please relogin account");
+        }
+        Guid uuid =  Guid.Parse(User.Identity.Name);
+        if (UserTable.Count(user => user.Id == uuid) < 1){
+            return BadRequest("User not exsit");
+        }
+        if (RestaurantTable.Count(restaurant => restaurant.Id == rId) < 1){
+            return BadRequest("Restaurant not exsit");
+        }
+        UserRestaurantRateTable.Add(new UserRestaurantRateModel{
+            UserId = uuid,
+            RestaurantId = rId,
+            rating = rate
+        });
+        // Excute SQL Command
+        if (_context.SaveChanges() <= 0){
+            return BadRequest(new{
+                ErrorMessage = "Data not change"
+            });
+        }
+        return Ok(rId);
     }
 }
