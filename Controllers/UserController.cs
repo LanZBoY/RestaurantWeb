@@ -85,12 +85,13 @@ private readonly RestaurantContext _context = restaurantContext;
             return BadRequest("Please relogin account");
         }
         Guid uuid =  Guid.Parse(User.Identity.Name);
-        if (UserTable.Count(user => user.Id == uuid) < 1){
+        if (!UserTable.Any(user => user.Id == uuid)){
             return BadRequest("User not exsit");
         }
-        if (RestaurantTable.Count(restaurant => restaurant.Id == rId) < 1){
+        if (!RestaurantTable.Any(restaurant => restaurant.Id == rId)){
             return BadRequest("Restaurant not exsit");
         }
+
         UserRestaurantRateTable.Add(new UserRestaurantRateModel{
             UserId = uuid,
             RestaurantId = rId,

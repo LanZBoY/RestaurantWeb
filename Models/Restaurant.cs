@@ -21,13 +21,12 @@ public class AddRestaurantDTO{
     public required string Desc{get; set;}
 }
 
-
 [Table(name:"UserRestaurantRate")]
-[Keyless]
+[PrimaryKey(nameof(UserId), nameof(RestaurantId))]
 public class UserRestaurantRateModel{
     [Column("uId"), ForeignKey("User.uId")]
     public Guid? UserId {get; set;}
-    [Column("rId"), ForeignKey("Restaurant.rId")]
+    [Column("rId"), Key, ForeignKey("Restaurant.rId")]
     public Guid? RestaurantId {get; set;}
 
     public float rating {get; set;}
