@@ -19,6 +19,12 @@ public class UserModel{
     public string? Role{get; set;}
 }
 
+public class MgmtUsersDTO{
+    public Guid? Id{get; set;}
+    public string? UserName {get; set;}
+    public string? Mail{get; set;}
+}
+
 public class UserLoginDTO{
 
     [Required, FromHeader]

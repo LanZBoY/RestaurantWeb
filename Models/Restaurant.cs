@@ -26,7 +26,7 @@ public class AddRestaurantDTO{
 public class UserRestaurantRateModel{
     [Column("uId"), ForeignKey("User.uId")]
     public Guid? UserId {get; set;}
-    [Column("rId"), Key, ForeignKey("Restaurant.rId")]
+    [Column("rId"), ForeignKey("Restaurant.rId")]
     public Guid? RestaurantId {get; set;}
 
     public float rating {get; set;}

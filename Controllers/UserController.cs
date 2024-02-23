@@ -1,12 +1,11 @@
 using System.IdentityModel.Tokens.Jwt;
-using System.Net;
 using System.Security.Claims;
 using System.Text;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http.Features;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Razor.Internal;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Internal;
 using Microsoft.IdentityModel.Tokens;
 using Restaurant.Models;
 
@@ -74,8 +73,22 @@ private readonly RestaurantContext _context = restaurantContext;
             return BadRequest("Please relogin account");
         }
         Guid uuid =  Guid.Parse(User.Identity.Name);
-        UserModel? info = UserTable.Where((item) => item.Id == uuid).FirstOrDefault();
-        return Ok(info);
+        
+        var info = from u in UserTable
+        where u.Id == uuid
+        select new {
+            u.UserName,
+            u.Mail,
+            ratingHistoy = (from rating in UserRestaurantRateTable
+            join restaurant in RestaurantTable on rating.RestaurantId equals restaurant.Id
+            where rating.UserId == uuid
+            select new {
+                restaurant.Name,
+                restaurant.Desc,
+                rating.rating
+            }).ToList()
+        };
+        return Ok(info.FirstOrDefault());
     }
 
     [HttpPost("Rate/{rId:guid}/{rate:float}")]
@@ -103,6 +116,6 @@ private readonly RestaurantContext _context = restaurantContext;
                 ErrorMessage = "Data not change"
             });
         }
-        return Ok(rId);
+        return Ok();
     }
 }

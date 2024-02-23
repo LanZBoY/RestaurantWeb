@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Razor.TagHelpers;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Internal;
 using Restaurant.Models;
 
 namespace Restaurant.Controllers;
@@ -10,9 +11,21 @@ namespace Restaurant.Controllers;
 [Authorize(policy:"Admin")]
 public class MgmtController(RestaurantContext restaurantContext) : ControllerBase{
     private readonly RestaurantContext _context = restaurantContext;
+    private readonly DbSet<UserModel> UserTable = restaurantContext.Users;
+    private readonly DbSet<RestaurantModel> RestaurantTable = restaurantContext.Restaurants;
+    private readonly DbSet<UserRestaurantRateModel> UserRestaurantRateTable = restaurantContext.UserRestaurantRates;
+
     [HttpGet("Users")]
     public ActionResult<List<UserModel>> GetAllUser(){
-        return Ok(_context.Users.ToList());
+        return Ok(
+            _context
+            .Users
+            .Select(user => new MgmtUsersDTO{
+            Id = user.Id,
+            UserName = user.UserName,
+            Mail = user.Mail})
+            .ToList()
+        );
     }
 
     [HttpGet("Restaurants")]
@@ -32,8 +45,17 @@ public class MgmtController(RestaurantContext restaurantContext) : ControllerBas
         }
         return Created();
     }
-    [HttpGet("UserRatings/{UserName}")]
-    public ActionResult GetAllUserRatings(string? UserName){
-        return Ok();
+    [HttpGet("UserRatings/{UserId:guid}")]
+    public ActionResult GetUserRatings(Guid UserId){
+        var query = from rating in UserRestaurantRateTable
+                    join restaurant in RestaurantTable
+                    on rating.RestaurantId equals restaurant.Id
+                    where rating.UserId == UserId
+                    select new {
+                        restaurant.Name,
+                        restaurant.Desc,
+                        rating.rating,
+                    };
+        return Ok(query.ToList());
     }
 }
