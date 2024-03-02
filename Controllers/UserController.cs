@@ -54,10 +54,10 @@ private readonly RestaurantContext _context = restaurantContext;
         var jwtTokenHandler = new JwtSecurityTokenHandler();
         string secret = _configuration["JwtSetting:Secret"]!;
         var tokenDescriptor = new SecurityTokenDescriptor{
-            Subject = new ClaimsIdentity([
+            Subject = new ClaimsIdentity(new Claim[]{
                 new(ClaimTypes.Name, findResult.Id.ToString()!),
                 new(ClaimTypes.Role, findResult.Role),
-            ]),
+            }),
             Expires = DateTime.UtcNow.AddHours(1),
             SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(Encoding.ASCII.GetBytes(secret)), SecurityAlgorithms.HmacSha256Signature)
         };
