@@ -9,17 +9,29 @@ using Restaurant.Models;
 var builder = WebApplication.CreateBuilder(args);
 var config = builder.Configuration;
 
+String defaultCorsPolicy = "default";
+
+builder.Services.AddCors(option =>
+{
+    option.AddPolicy(name: defaultCorsPolicy, policy =>
+    {
+        policy.WithOrigins("http://localhost:5000", "http://192.168.1.115:5000").AllowAnyHeader().AllowAnyMethod();
+    });
+});
+
 // Add services to the container.
 builder.Services.AddControllers();
 // Add JWTAuthentication
-
-builder.Services.AddAuthentication((opt) => {
+builder.Services.AddAuthentication((opt) =>
+{
     opt.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
     opt.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
 })
-.AddJwtBearer((opt) => {
+.AddJwtBearer((opt) =>
+{
     string? secret = config["JwtSetting:Secret"];
-    opt.TokenValidationParameters = new TokenValidationParameters{
+    opt.TokenValidationParameters = new TokenValidationParameters
+    {
         ValidateIssuerSigningKey = true,
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(secret!)),
         ValidateIssuer = false,
@@ -27,7 +39,8 @@ builder.Services.AddAuthentication((opt) => {
     };
 });
 
-builder.Services.AddAuthorization((opt) =>{
+builder.Services.AddAuthorization((opt) =>
+{
     opt.AddPolicy("User", new AuthorizationPolicyBuilder()
     .RequireRole("User")
     .AddAuthenticationSchemes(JwtBearerDefaults.AuthenticationScheme)
@@ -48,12 +61,15 @@ builder.Services.AddAuthorization((opt) =>{
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen((opt) => {
-    opt.SwaggerDoc("v1", new OpenApiInfo{
+builder.Services.AddSwaggerGen((opt) =>
+{
+    opt.SwaggerDoc("v1", new OpenApiInfo
+    {
         Version = "1.0",
         Title = "餐廳API",
     });
-    opt.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme{
+    opt.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
         In = ParameterLocation.Header,
         Description = "Please enter a valid token",
         Name = "Authorization",
@@ -76,7 +92,8 @@ builder.Services.AddSwaggerGen((opt) => {
         }
     });
 });
-builder.Services.AddDbContext<RestaurantContext>(opt =>{
+builder.Services.AddDbContext<RestaurantContext>(opt =>
+{
     // 使用PostgreSql
     opt.UseNpgsql(connectionString: builder.Configuration.GetConnectionString("DefaultConnection"));
 });
@@ -94,6 +111,9 @@ app.UseHttpsRedirection();
 
 app.UseAuthorization();
 app.UseAuthentication();
+
+app.UseCors(defaultCorsPolicy);
+
 app.MapControllers();
 
 app.Run();
