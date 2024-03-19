@@ -63,24 +63,7 @@ namespace Restaurant.Migrations
                     {Guid.NewGuid().ToString(),"WenTee", "jp4wu6", "god@gmail.com", "Admin"}
                 }
             );
-            // InsertRestaurantData
-            migrationBuilder.InsertData(
-                table: "Restaurant",
-                columns: new[]{
-                    "rId",
-                    "Name",
-                    "Desc"
-                },
-                values: new object[,]{
-                    {Guid.NewGuid().ToString(),"逢甲酸菜魚", "很好吃"},
-                    {Guid.NewGuid().ToString(),"漢來海港", "好好吃"},
-                    {Guid.NewGuid().ToString(),"大喜鍋", "便宜好吃"},
-                    {Guid.NewGuid().ToString(),"逢甲大麻粉圓", "從小吃到大"},
-                    {Guid.NewGuid().ToString(),"大王牛肉麵", "麵條很Q"},
-                    {Guid.NewGuid().ToString(),"逢甲牛排", "好吃"},
-                    {Guid.NewGuid().ToString(),"牛先生", "麵條很Q"},
-                }
-            );
+
         }
 
         /// <inheritdoc />

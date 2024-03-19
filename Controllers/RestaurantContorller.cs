@@ -16,8 +16,23 @@ public class RestaurantsController(RestaurantContext restaurantContext) : Contro
                     {
                         restaurant.Id,
                         restaurant.Name,
-                        restaurant.Desc
+                        restaurant.Desc,
+                        restaurant.Img
                     };
         return Ok(query.ToList());
+    }
+
+    [HttpGet("images/{imgName}")]
+    public IActionResult GetTempImg(string imgName)
+    {
+        try
+        {
+            Byte[] b = System.IO.File.ReadAllBytes($"./storage/{imgName}");
+            return File(b, "image/jpg");
+        }
+        catch (FileNotFoundException)
+        {
+            return NotFound();
+        }
     }
 }
