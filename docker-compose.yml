@@ -26,9 +26,9 @@ services:
     links:
       - restaurant_db
 
-  # frontend_service:
-  #   build: /Restaurant_Frontend/.
-  #   ports:
-  #     - "8081:80"
-  #   links:
-  #     - backend_service
+  frontend_service:
+    build: /Restaurant_Frontend/.
+    ports:
+      - "8081:80"
+    links:
+      - backend_service

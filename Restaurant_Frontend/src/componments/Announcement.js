@@ -18,7 +18,7 @@ const Announcement = () => {
               <Card.Title className="fs-4 mb-3">標題</Card.Title>
               <Card.Text className="fs-5 mb-3">內容</Card.Text>
             </Card.Body>
-            <Card.Footer className="fs-6">時間</Card.Footer>
+            <Card.Footer className="text-muted">時間</Card.Footer>
           </Card>
         </Col>
       </Row>
