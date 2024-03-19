@@ -20,7 +20,7 @@ services:
     - "POSTGRES_PASSWORD=jp4wu6"
 
   backend_service:
-    build: .
+    build: /Restaurant_Backend/.
     ports:
       - "8001:5000"
     links:
