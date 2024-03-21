@@ -5,24 +5,26 @@ import Restaurant from "../componments/Restaurant.js";
 import { Container, Row } from "react-bootstrap";
 const RestaurantsPage = () => {
   const [restaurantsInfo, setRestaurantsInfo] = useState([]);
-
+  const [searchString, setSearchString] = useState("");
   useEffect(() => {
     fetch(
-      `${process.env.BACKEND_SERVICE_ROOT}/${process.env.BACKEND_SERVICE_RESTAURANTS}`
+      `${process.env.BACKEND_SERVICE_ROOT}/${process.env.BACKEND_SERVICE_RESTAURANTS}?searchResaurant=${searchString}`
     )
       .then((res) => res.json())
       .then((data) => {
-        setRestaurantsInfo(data);
+        setRestaurantsInfo(() => data);
       })
       .catch((e) => {
         console.log(e);
       });
-  }, []);
+  }, [searchString]);
   return (
     <>
       <NavigationBar
-        infoList={restaurantsInfo}
         setInfoList={setRestaurantsInfo}
+        showSearchBar
+        searchString={searchString}
+        setSearchString={setSearchString}
       />
       <Container>
         <Row className="mt-2">

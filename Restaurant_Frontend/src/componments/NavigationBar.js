@@ -12,23 +12,7 @@ import RegisterModal from "./RegisterModal.js";
 import LoginModal from "./LoginModal.js";
 import PropTypes from "prop-types";
 
-const NavigationBar = ({ setInfoList }) => {
-  const [searchString, setSearchString] = useState("");
-
-  const handleSearchEvent = (e) => {
-    e.preventDefault();
-    fetch(
-      `${process.env.BACKEND_SERVICE_ROOT}/${process.env.BACKEND_SERVICE_RESTAURANTS}?searchResaurant=${searchString}`
-    )
-      .then((res) => res.json())
-      .then((data) => {
-        setInfoList(() => data);
-      })
-      .catch((e) => {
-        console.log(e);
-      });
-  };
-
+const NavigationBar = ({ showSearchBar, searchString, setSearchString }) => {
   const [showRegister, setShowRegister] = useState(false);
   const [showLogin, setShowLogin] = useState(false);
   return (
@@ -44,20 +28,19 @@ const NavigationBar = ({ setInfoList }) => {
               列表
             </NavLink>
           </Nav>
-          <Form className="me-auto w-50" onSubmit={handleSearchEvent}>
-            <InputGroup>
-              <Form.Control
-                type="search"
-                placeholder="想找的資訊"
-                aria-label="Search"
-                value={searchString}
-                onChange={(e) => setSearchString(e.target.value)}
-              ></Form.Control>
-              <Button variant="success" type="submit">
-                搜尋
-              </Button>
-            </InputGroup>
-          </Form>
+          {showSearchBar === true ? (
+            <Form className="me-auto w-50">
+              <InputGroup>
+                <Form.Control
+                  type="search"
+                  placeholder="想找的資訊"
+                  aria-label="Search"
+                  value={searchString}
+                  onChange={(e) => setSearchString(() => e.target.value)}
+                ></Form.Control>
+              </InputGroup>
+            </Form>
+          ) : undefined}
           <Button
             variant="success"
             className="me-2"
@@ -80,8 +63,10 @@ const NavigationBar = ({ setInfoList }) => {
 };
 
 NavigationBar.propTypes = {
-  infoList: PropTypes.array,
+  showSearchBar: PropTypes.bool,
   setInfoList: PropTypes.func,
+  searchString: PropTypes.string,
+  setSearchString: PropTypes.func,
 };
 
 export default NavigationBar;

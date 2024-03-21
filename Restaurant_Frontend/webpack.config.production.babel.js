@@ -1,24 +1,11 @@
 import path from "path";
 import HtmlWebpackPlugin from "html-webpack-plugin";
-import dotenv from "dotenv";
-import webpack from "webpack";
-const { DefinePlugin } = webpack;
+import DotenvWebpackPlugin from "dotenv-webpack";
 
 const __dirname = import.meta.dirname;
 
 export default (env) => {
-  const configEnv = dotenv.config({
-    path: `.env.${env.NODE_ENV}`,
-  }).parsed;
-
-  console.log(configEnv);
-
-  const envKeys = Object.keys(configEnv).reduce((prev, next) => {
-    prev[`process.env.${next}`] = JSON.stringify(configEnv[next]);
-    return prev;
-  }, {});
-
-  console.log(envKeys);
+  console.log(`Current Enviroment is ${env.NODE_ENV}`);
   return {
     entry: path.resolve(__dirname, "src", "index.js"),
     output: {
@@ -57,7 +44,9 @@ export default (env) => {
       new HtmlWebpackPlugin({
         template: "./public/index.html",
       }),
-      new DefinePlugin(envKeys),
+      new DotenvWebpackPlugin({
+        path: ".env.production",
+      }),
     ],
   };
 };
