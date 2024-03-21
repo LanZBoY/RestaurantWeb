@@ -33,6 +33,7 @@ builder.Services.AddAuthentication((opt) =>
     opt.TokenValidationParameters = new TokenValidationParameters
     {
         ValidateIssuerSigningKey = true,
+        RequireExpirationTime = true,
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(secret!)),
         ValidateIssuer = false,
         ValidateAudience = false
