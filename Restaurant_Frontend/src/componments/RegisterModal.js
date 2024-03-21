@@ -31,52 +31,55 @@ const RegisterModal = ({ showRegister, setShowRegister }) => {
       </Modal.Header>
       <Form onSubmit={handleSubmit}>
         <Modal.Body>
-          <Form.Group className="mb-2">
-            <Form.Label>帳戶名稱</Form.Label>
-            <Form.Control
-              name="userName"
-              type="text"
-              value={registerUser.userName}
-              onChange={(e) =>
-                setRegisterUser({
-                  ...registerUser,
-                  userName: e.target.value,
-                })
-              }
-            ></Form.Control>
-          </Form.Group>
-          <Form.Group className="mb-2">
-            <Form.Label>密碼</Form.Label>
-            <InputGroup>
+          <Form.Group className="mb-3">
+            <Form.FloatingLabel label="帳戶名稱">
               <Form.Control
-                name="password"
-                type={showPassword ? "text" : "password"}
-                value={registerUser.passowrd}
+                name="userName"
+                type="text"
+                value={registerUser.userName}
                 onChange={(e) =>
                   setRegisterUser({
                     ...registerUser,
-                    passowrd: e.target.value,
+                    userName: e.target.value,
                   })
                 }
               ></Form.Control>
+            </Form.FloatingLabel>
+          </Form.Group>
+          <Form.Group className="mb-3">
+            <InputGroup>
+              <Form.FloatingLabel label="密碼">
+                <Form.Control
+                  name="password"
+                  type={showPassword ? "text" : "password"}
+                  value={registerUser.passowrd}
+                  onChange={(e) =>
+                    setRegisterUser({
+                      ...registerUser,
+                      passowrd: e.target.value,
+                    })
+                  }
+                ></Form.Control>
+              </Form.FloatingLabel>
               <Button onClick={() => setShowPassword(!showPassword)}>
                 顯示
               </Button>
             </InputGroup>
           </Form.Group>
-          <Form.Group className="mb-2">
-            <Form.Label>電子郵件</Form.Label>
-            <Form.Control
-              name="email"
-              type="text"
-              value={registerUser.email}
-              onChange={(e) =>
-                setRegisterUser({
-                  ...registerUser,
-                  email: e.target.value,
-                })
-              }
-            ></Form.Control>
+          <Form.Group className="mb-3">
+            <Form.FloatingLabel label="電子郵件">
+              <Form.Control
+                name="email"
+                type="text"
+                value={registerUser.email}
+                onChange={(e) =>
+                  setRegisterUser({
+                    ...registerUser,
+                    email: e.target.value,
+                  })
+                }
+              ></Form.Control>
+            </Form.FloatingLabel>
           </Form.Group>
         </Modal.Body>
         <Modal.Footer>

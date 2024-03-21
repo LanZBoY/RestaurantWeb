@@ -29,34 +29,36 @@ const LoginModal = ({ showLogin, setShowLogin }) => {
       </Modal.Header>
       <Form onSubmit={handleSubmit}>
         <Modal.Body>
-          <Form.Group>
-            <Form.Label>帳戶名稱</Form.Label>
-            <Form.Control
-              name="userName"
-              type="text"
-              value={loginUser.userName}
-              onChange={(e) =>
-                setLoginUser({
-                  ...loginUser,
-                  userName: e.target.value,
-                })
-              }
-            ></Form.Control>
-          </Form.Group>
-          <Form.Group>
-            <Form.Label>密碼</Form.Label>
-            <InputGroup>
+          <Form.Group className="mb-3">
+            <Form.FloatingLabel label="帳戶名稱">
               <Form.Control
-                name="password"
-                type={showPassword ? "password" : "text"}
-                value={loginUser.password}
+                name="userName"
+                type="text"
+                value={loginUser.userName}
                 onChange={(e) =>
                   setLoginUser({
                     ...loginUser,
-                    password: e.target.value,
+                    userName: e.target.value,
                   })
                 }
               ></Form.Control>
+            </Form.FloatingLabel>
+          </Form.Group>
+          <Form.Group className="mb-3">
+            <InputGroup>
+              <Form.FloatingLabel label="密碼">
+                <Form.Control
+                  name="password"
+                  type={showPassword ? "password" : "text"}
+                  value={loginUser.password}
+                  onChange={(e) =>
+                    setLoginUser({
+                      ...loginUser,
+                      password: e.target.value,
+                    })
+                  }
+                ></Form.Control>
+              </Form.FloatingLabel>
               <Button onClick={() => setShowPassword(!showPassword)}>
                 顯示
               </Button>
