@@ -1,10 +1,15 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
 import { Button, Form, InputGroup, Modal } from "react-bootstrap";
-const LoginModal = ({ showLogin, setShowLogin }) => {
+import {
+  BACKEND_SEVICE_ROOT,
+  BACKEND_SERVICE_USERS,
+  USER_TOKEN,
+} from "../EnvVar.js";
+const LoginModal = ({ showLogin, setShowLogin, setIsLogin }) => {
   const handleClose = () => {
     setShowLogin(!showLogin);
-    setLoginUser({
+    setLoginInfo({
       userName: "",
       password: "",
     });
@@ -12,14 +17,34 @@ const LoginModal = ({ showLogin, setShowLogin }) => {
 
   const [showPassword, setShowPassword] = useState(false);
 
-  const [loginUser, setLoginUser] = useState({
+  const [loginInfo, setLoginInfo] = useState({
     userName: "",
     password: "",
   });
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log(loginUser);
+    fetch(`${BACKEND_SEVICE_ROOT}/${BACKEND_SERVICE_USERS}/login`, {
+      method: "POST",
+      headers: {
+        contentType: "application/json",
+        ...loginInfo,
+      },
+    })
+      .then((res) => {
+        return res.text();
+      })
+      .then((data) => {
+        window.localStorage.setItem(USER_TOKEN, data);
+        const userToken = window.localStorage.getItem(USER_TOKEN);
+        return userToken === null ? false : true;
+      })
+      .then((loginResult) => {
+        setIsLogin(loginResult);
+      })
+      .catch((e) => {
+        console.log(e);
+      });
   };
 
   return (
@@ -34,10 +59,10 @@ const LoginModal = ({ showLogin, setShowLogin }) => {
               <Form.Control
                 name="userName"
                 type="text"
-                value={loginUser.userName}
+                value={loginInfo.userName}
                 onChange={(e) =>
-                  setLoginUser({
-                    ...loginUser,
+                  setLoginInfo({
+                    ...loginInfo,
                     userName: e.target.value,
                   })
                 }
@@ -49,11 +74,11 @@ const LoginModal = ({ showLogin, setShowLogin }) => {
               <Form.FloatingLabel label="密碼">
                 <Form.Control
                   name="password"
-                  type={showPassword ? "password" : "text"}
-                  value={loginUser.password}
+                  type={showPassword ? "text" : "password"}
+                  value={loginInfo.password}
                   onChange={(e) =>
-                    setLoginUser({
-                      ...loginUser,
+                    setLoginInfo({
+                      ...loginInfo,
                       password: e.target.value,
                     })
                   }
@@ -78,6 +103,7 @@ const LoginModal = ({ showLogin, setShowLogin }) => {
 LoginModal.propTypes = {
   showLogin: PropTypes.bool,
   setShowLogin: PropTypes.func,
+  setIsLogin: PropTypes.func,
 };
 
 export default LoginModal;

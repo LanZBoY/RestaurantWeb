@@ -3,12 +3,13 @@ import React, { useEffect, useState } from "react";
 import NavigationBar from "../componments/NavigationBar.js";
 import Restaurant from "../componments/Restaurant.js";
 import { Container, Row } from "react-bootstrap";
+import { BACKEND_SEVICE_ROOT, BACKEND_SERVICE_RESTAURANTS } from "../EnvVar.js";
 const RestaurantsPage = () => {
   const [restaurantsInfo, setRestaurantsInfo] = useState([]);
   const [searchString, setSearchString] = useState("");
   useEffect(() => {
     fetch(
-      `${process.env.BACKEND_SERVICE_ROOT}/${process.env.BACKEND_SERVICE_RESTAURANTS}?searchResaurant=${searchString}`
+      `${BACKEND_SEVICE_ROOT}/${BACKEND_SERVICE_RESTAURANTS}?searchResaurant=${searchString}`
     )
       .then((res) => res.json())
       .then((data) => {
@@ -21,7 +22,6 @@ const RestaurantsPage = () => {
   return (
     <>
       <NavigationBar
-        setInfoList={setRestaurantsInfo}
         showSearchBar
         searchString={searchString}
         setSearchString={setSearchString}

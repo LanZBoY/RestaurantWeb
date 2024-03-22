@@ -40,18 +40,19 @@ public class MgmtController(RestaurantContext restaurantContext) : ControllerBas
                     {
                         restaurant.Id,
                         restaurant.Name,
-                        restaurant.Desc
+                        restaurant.Desc,
+                        restaurant.Img,
                     };
         return Ok(query.ToList());
     }
-
     [HttpPost("Restaurants")]
     public ActionResult CreateRestaurant(AddRestaurantDTO addRestaurant)
     {
         _context.Restaurants.Add(new RestaurantModel
         {
             Name = addRestaurant.Name,
-            Desc = addRestaurant.Desc
+            Desc = addRestaurant.Desc,
+            Img = addRestaurant.Img
         });
         if (_context.SaveChanges() <= 0)
         {
@@ -77,4 +78,12 @@ public class MgmtController(RestaurantContext restaurantContext) : ControllerBas
                     };
         return Ok(query.ToList());
     }
+    [HttpDelete("Restaurants/{rId:guid}")]
+    public ActionResult DeleteRestaurant(Guid rId)
+    {
+        int count = _context.Restaurants.Where(item => item.Id == rId).ExecuteDelete();
+        return Ok(new { deleteCount = count });
+    }
+
+
 }

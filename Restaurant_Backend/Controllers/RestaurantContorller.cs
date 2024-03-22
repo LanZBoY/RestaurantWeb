@@ -7,6 +7,8 @@ namespace Restaurant.Controllers;
 public class RestaurantsController(RestaurantContext restaurantContext) : ControllerBase
 {
     private readonly RestaurantContext _context = restaurantContext;
+    private readonly string STORAGE_ROOT = ".\\storage";
+
     [HttpGet]
     public ActionResult GetRestaurant([FromQuery] string? searchResaurant)
     {
@@ -27,12 +29,26 @@ public class RestaurantsController(RestaurantContext restaurantContext) : Contro
     {
         try
         {
-            Byte[] b = System.IO.File.ReadAllBytes($"./storage/{imgName}");
+            byte[] b = System.IO.File.ReadAllBytes($"./storage/{imgName}");
             return File(b, "image/jpg");
         }
         catch (FileNotFoundException)
         {
             return NotFound();
         }
+    }
+    [HttpPost("images/{imgName}")]
+    public async Task<IActionResult> UploadImg(string imgName, IFormFile imgFile)
+    {
+        if (imgFile.Length > 0)
+        {
+            string filePath = Path.Combine(STORAGE_ROOT, imgName);
+
+            Console.WriteLine(filePath);
+            using FileStream fs = new FileStream(filePath, FileMode.Create);
+            await imgFile.CopyToAsync(fs);
+
+        }
+        return Created();
     }
 }

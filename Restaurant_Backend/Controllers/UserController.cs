@@ -65,6 +65,7 @@ public class UserController(RestaurantContext restaurantContext, IConfiguration 
         var tokenDescriptor = new SecurityTokenDescriptor
         {
             Subject = new ClaimsIdentity([
+                new Claim(ClaimTypes.Sid, findResult.Id.ToString()),
                 new Claim(ClaimTypes.Role, findResult.Role),
                 new Claim(ClaimTypes.Name, findResult.UserName??=UNKNOWN),
                 new Claim(ClaimTypes.Email, findResult.Mail??=UNKNOWN),
@@ -96,11 +97,12 @@ public class UserController(RestaurantContext restaurantContext, IConfiguration 
     [Authorize(policy: "All")]
     public ActionResult RateRestaurant(Guid rId, float rate)
     {
-        if (User.Identity == null || User.Identity.Name == null)
+        string? userId = User.FindFirstValue(ClaimTypes.Sid);
+        if (userId == null)
         {
             return BadRequest("Please relogin account");
         }
-        Guid uuid = Guid.Parse(User.Identity.Name);
+        Guid uuid = Guid.Parse(userId);
         if (!UserTable.Any(user => user.Id == uuid))
         {
             return BadRequest("User not exsit");

@@ -26,6 +26,8 @@ public class AddRestaurantDTO
     public required string Name { get; set; }
     [Required]
     public required string Desc { get; set; }
+
+    public string? Img { get; set; }
 }
 
 [Table(name: "UserRestaurantRate")]

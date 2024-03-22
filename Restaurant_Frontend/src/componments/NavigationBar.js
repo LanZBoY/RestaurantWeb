@@ -11,10 +11,14 @@ import { NavLink } from "react-router-dom";
 import RegisterModal from "./RegisterModal.js";
 import LoginModal from "./LoginModal.js";
 import PropTypes from "prop-types";
+import UserInfo from "./UserInfo.js";
 
 const NavigationBar = ({ showSearchBar, searchString, setSearchString }) => {
   const [showRegister, setShowRegister] = useState(false);
   const [showLogin, setShowLogin] = useState(false);
+  const [isLogin, setIsLogin] = useState(() => {
+    return window.localStorage.getItem("userToken") === null ? false : true;
+  });
   return (
     <>
       <Navbar variant="dark" bg="primary" sticky="top">
@@ -41,30 +45,39 @@ const NavigationBar = ({ showSearchBar, searchString, setSearchString }) => {
               </InputGroup>
             </Form>
           ) : undefined}
-          <Button
-            variant="success"
-            className="me-2"
-            onClick={() => setShowRegister(!showRegister)}
-          >
-            註冊
-          </Button>
-          <Button variant="success" onClick={() => setShowLogin(true)}>
-            登入
-          </Button>
+          {isLogin ? (
+            <UserInfo />
+          ) : (
+            <>
+              <Button
+                variant="success"
+                className="me-2"
+                onClick={() => setShowRegister(!showRegister)}
+              >
+                註冊
+              </Button>
+              <Button variant="success" onClick={() => setShowLogin(true)}>
+                登入
+              </Button>
+              <RegisterModal
+                showRegister={showRegister}
+                setShowRegister={setShowRegister}
+              />
+              <LoginModal
+                showLogin={showLogin}
+                setShowLogin={setShowLogin}
+                setIsLogin={setIsLogin}
+              />
+            </>
+          )}
         </Container>
       </Navbar>
-      <RegisterModal
-        showRegister={showRegister}
-        setShowRegister={setShowRegister}
-      />
-      <LoginModal showLogin={showLogin} setShowLogin={setShowLogin} />
     </>
   );
 };
 
 NavigationBar.propTypes = {
   showSearchBar: PropTypes.bool,
-  setInfoList: PropTypes.func,
   searchString: PropTypes.string,
   setSearchString: PropTypes.func,
 };
