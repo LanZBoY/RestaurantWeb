@@ -40,7 +40,8 @@ const LoginModal = ({ showLogin, setShowLogin, setIsLogin }) => {
         return userToken === null ? false : true;
       })
       .then((loginResult) => {
-        setIsLogin(loginResult);
+        setIsLogin(() => loginResult);
+        setShowLogin(() => false);
       })
       .catch((e) => {
         console.log(e);

@@ -46,7 +46,7 @@ const NavigationBar = ({ showSearchBar, searchString, setSearchString }) => {
             </Form>
           ) : undefined}
           {isLogin ? (
-            <UserInfo />
+            <UserInfo setIsLogin={setIsLogin} />
           ) : (
             <>
               <Button
