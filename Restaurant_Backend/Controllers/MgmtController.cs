@@ -14,7 +14,7 @@ public class MgmtController(RestaurantContext restaurantContext) : ControllerBas
     private readonly DbSet<UserModel> UserTable = restaurantContext.Users;
     private readonly DbSet<RestaurantModel> RestaurantTable = restaurantContext.Restaurants;
     private readonly DbSet<UserRestaurantRateModel> UserRestaurantRateTable = restaurantContext.UserRestaurantRates;
-
+    private readonly string STORAGE_ROOT = ".\\storage";
     [HttpGet("Users")]
     public ActionResult<List<UserModel>> GetAllUser()
     {
@@ -85,5 +85,18 @@ public class MgmtController(RestaurantContext restaurantContext) : ControllerBas
         return Ok(new { deleteCount = count });
     }
 
+    [HttpPost("images/{imgName}")]
+    public async Task<IActionResult> UploadImg(string imgName, IFormFile imgFile)
+    {
+        if (imgFile.Length > 0)
+        {
+            string filePath = Path.Combine(STORAGE_ROOT, imgName);
 
+            Console.WriteLine(filePath);
+            using FileStream fs = new(filePath, FileMode.Create);
+            await imgFile.CopyToAsync(fs);
+
+        }
+        return Created();
+    }
 }

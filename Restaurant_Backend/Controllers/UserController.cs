@@ -70,7 +70,7 @@ public class UserController(RestaurantContext restaurantContext, IConfiguration 
                 new Claim(ClaimTypes.Name, findResult.UserName??=UNKNOWN),
                 new Claim(ClaimTypes.Email, findResult.Mail??=UNKNOWN),
             ]),
-            Expires = DateTime.UtcNow.AddHours(1),
+            Expires = DateTime.UtcNow.AddMinutes(5),
             SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(Encoding.ASCII.GetBytes(secret)), SecurityAlgorithms.HmacSha256Signature)
         };
         var token = jwtTokenHandler.CreateToken(tokenDescriptor);

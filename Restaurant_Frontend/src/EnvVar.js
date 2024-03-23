@@ -6,3 +6,8 @@ export const BACKEND_SERVICE_IMAGES = process.env.BACKEND_SERVICE_IMAGES;
 
 // localStorageKey
 export const USER_TOKEN = "userToken";
+
+export default function setCookie(key, value, expireTime) {
+  if (key === undefined || value === undefined) return;
+  document.cookie = `${key}=${value};`;
+}

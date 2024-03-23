@@ -9,7 +9,7 @@ using Restaurant.Models;
 var builder = WebApplication.CreateBuilder(args);
 var config = builder.Configuration;
 
-String defaultCorsPolicy = "default";
+string defaultCorsPolicy = "default";
 
 builder.Services.AddCors(option =>
 {
@@ -92,6 +92,7 @@ builder.Services.AddSwaggerGen((opt) =>
             Array.Empty<string>()
         }
     });
+
 });
 builder.Services.AddDbContext<RestaurantContext>(opt =>
 {
