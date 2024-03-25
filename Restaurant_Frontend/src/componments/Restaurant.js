@@ -4,10 +4,10 @@ import PropTypes from "prop-types";
 
 const Restaurant = ({
   restaurantInfo = {
-    id: "rId",
+    id: "loading",
     img: "https://placehold.co/600x400/?text=Image",
-    name: "RestaurantName",
-    desc: "RestaurnatDesc",
+    name: "loading",
+    desc: "loading",
   },
 }) => {
   const [rating, setRating] = useState(0);

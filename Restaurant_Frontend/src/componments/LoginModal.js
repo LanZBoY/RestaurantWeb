@@ -1,11 +1,8 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
 import { Button, Form, InputGroup, Modal } from "react-bootstrap";
-import {
-  BACKEND_SEVICE_ROOT,
-  BACKEND_SERVICE_USERS,
-  USER_TOKEN,
-} from "../EnvVar.js";
+import { BACKEND_SEVICE_ROOT, BACKEND_SERVICE_USERS } from "../EnvVar.js";
+import { USER_TOKEN } from "../model/UserModel.js";
 const LoginModal = ({ showLogin, setShowLogin, setIsLogin }) => {
   const handleClose = () => {
     setShowLogin(!showLogin);
@@ -22,16 +19,24 @@ const LoginModal = ({ showLogin, setShowLogin, setIsLogin }) => {
     password: "",
   });
 
+  const [hintMessage, setHintMessage] = useState("");
+
   const handleSubmit = (e) => {
     e.preventDefault();
     fetch(`${BACKEND_SEVICE_ROOT}/${BACKEND_SERVICE_USERS}/login`, {
       method: "POST",
       headers: {
-        contentType: "application/json",
+        "Content-Type": "application/json",
         ...loginInfo,
       },
     })
       .then((res) => {
+        switch (res.status) {
+          case 404:
+            throw new Error("帳號或密碼錯誤");
+          case 401:
+            throw new Error("帳號或密碼不能為空");
+        }
         return res.text();
       })
       .then((data) => {
@@ -44,7 +49,8 @@ const LoginModal = ({ showLogin, setShowLogin, setIsLogin }) => {
         setShowLogin(() => false);
       })
       .catch((e) => {
-        console.log(e);
+        console.log(e.message);
+        setHintMessage(() => e.message);
       });
   };
 
@@ -61,6 +67,7 @@ const LoginModal = ({ showLogin, setShowLogin, setIsLogin }) => {
                 name="userName"
                 type="text"
                 value={loginInfo.userName}
+                required
                 onChange={(e) =>
                   setLoginInfo({
                     ...loginInfo,
@@ -77,6 +84,7 @@ const LoginModal = ({ showLogin, setShowLogin, setIsLogin }) => {
                   name="password"
                   type={showPassword ? "text" : "password"}
                   value={loginInfo.password}
+                  required
                   onChange={(e) =>
                     setLoginInfo({
                       ...loginInfo,
@@ -89,6 +97,13 @@ const LoginModal = ({ showLogin, setShowLogin, setIsLogin }) => {
                 顯示
               </Button>
             </InputGroup>
+            <Form.Text
+              style={{
+                color: "red",
+              }}
+            >
+              {hintMessage}
+            </Form.Text>
           </Form.Group>
         </Modal.Body>
         <Modal.Footer>

@@ -7,6 +7,7 @@ import {
   Button,
   InputGroup,
 } from "react-bootstrap";
+import { USER_TOKEN } from "../model/UserModel.js";
 import { NavLink } from "react-router-dom";
 import RegisterModal from "./RegisterModal.js";
 import LoginModal from "./LoginModal.js";
@@ -17,7 +18,7 @@ const NavigationBar = ({ showSearchBar, searchString, setSearchString }) => {
   const [showRegister, setShowRegister] = useState(false);
   const [showLogin, setShowLogin] = useState(false);
   const [isLogin, setIsLogin] = useState(() => {
-    return window.localStorage.getItem("userToken") === null ? false : true;
+    return window.localStorage.getItem(USER_TOKEN) === null ? false : true;
   });
   return (
     <>
@@ -62,6 +63,7 @@ const NavigationBar = ({ showSearchBar, searchString, setSearchString }) => {
               <RegisterModal
                 showRegister={showRegister}
                 setShowRegister={setShowRegister}
+                setIsLogin={setIsLogin}
               />
               <LoginModal
                 showLogin={showLogin}

@@ -1,14 +1,18 @@
 import React, { useState } from "react";
+import { USER_TOKEN } from "../model/UserModel.js";
 import { Button, Form, InputGroup, Modal } from "react-bootstrap";
+import { BACKEND_SEVICE_ROOT, BACKEND_SERVICE_USERS } from "../EnvVar.js";
 import PropTypes from "prop-types";
 
-const RegisterModal = ({ showRegister, setShowRegister }) => {
+const RegisterModal = ({ showRegister, setShowRegister, setIsLogin }) => {
   const handleClose = () => {
-    setShowRegister(false);
-    setRegisterUser({
-      userName: "",
-      passowrd: "",
-      email: "",
+    setShowRegister(() => false);
+    setRegisterUser(() => {
+      return {
+        userName: "",
+        password: "",
+        mail: "",
+      };
     });
   };
 
@@ -16,13 +20,32 @@ const RegisterModal = ({ showRegister, setShowRegister }) => {
 
   const [registerUser, setRegisterUser] = useState({
     userName: "",
-    passowrd: "",
-    email: "",
+    password: "",
+    mail: "",
   });
 
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log(registerUser);
+    fetch(`${BACKEND_SEVICE_ROOT}/${BACKEND_SERVICE_USERS}/Register`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(registerUser),
+    })
+      .then((res) => {
+        console.log(res);
+        return res.text();
+      })
+      .then((data) => {
+        window.localStorage.setItem(USER_TOKEN, data);
+        handleClose();
+        setIsLogin(() => true);
+      })
+      .catch((e) => {
+        console.log(e);
+      });
   };
   return (
     <Modal show={showRegister} onHide={handleClose}>
@@ -37,6 +60,7 @@ const RegisterModal = ({ showRegister, setShowRegister }) => {
                 name="userName"
                 type="text"
                 value={registerUser.userName}
+                required
                 onChange={(e) =>
                   setRegisterUser({
                     ...registerUser,
@@ -52,11 +76,12 @@ const RegisterModal = ({ showRegister, setShowRegister }) => {
                 <Form.Control
                   name="password"
                   type={showPassword ? "text" : "password"}
-                  value={registerUser.passowrd}
+                  value={registerUser.password}
+                  required
                   onChange={(e) =>
                     setRegisterUser({
                       ...registerUser,
-                      passowrd: e.target.value,
+                      password: e.target.value,
                     })
                   }
                 ></Form.Control>
@@ -71,11 +96,12 @@ const RegisterModal = ({ showRegister, setShowRegister }) => {
               <Form.Control
                 name="email"
                 type="text"
-                value={registerUser.email}
+                value={registerUser.mail}
+                required
                 onChange={(e) =>
                   setRegisterUser({
                     ...registerUser,
-                    email: e.target.value,
+                    mail: e.target.value,
                   })
                 }
               ></Form.Control>

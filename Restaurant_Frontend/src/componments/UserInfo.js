@@ -1,10 +1,7 @@
 import React, { useEffect, useState } from "react";
-
-import {
-  USER_TOKEN,
-  BACKEND_SEVICE_ROOT,
-  BACKEND_SERVICE_USERS,
-} from "../EnvVar.js";
+import { useNavigate } from "react-router-dom";
+import { BACKEND_SEVICE_ROOT, BACKEND_SERVICE_USERS } from "../EnvVar.js";
+import { USER_TOKEN } from "../model/UserModel.js";
 import { NavLink } from "react-router-dom";
 import { Nav } from "react-bootstrap";
 import PropTypes from "prop-types";
@@ -14,6 +11,7 @@ const UserInfo = ({ setIsLogin }) => {
     userName: "尚未登入",
     email: "...",
   });
+  const navigate = useNavigate();
   useEffect(() => {
     const token = window.localStorage.getItem(USER_TOKEN);
     fetch(`${BACKEND_SEVICE_ROOT}/${BACKEND_SERVICE_USERS}`, {
@@ -23,27 +21,26 @@ const UserInfo = ({ setIsLogin }) => {
       },
     })
       .then((res) => {
-        if (res.status == 400) {
-          throw {
-            type: "Token Expired",
-            statusCode: res.status,
-          };
-        }
         return res.json();
       })
       .then((userInfo) => {
         console.log(userInfo);
+        window.localStorage.setItem(USER_TOKEN, userInfo.newToken);
         setUserInfo(() => userInfo);
       })
-      .catch((e) => {
-        console.log(e);
+      .catch(() => {
+        window.localStorage.removeItem(USER_TOKEN);
+        setIsLogin(() => false);
       });
   }, []);
 
   const handleLogout = (e) => {
     e.preventDefault();
     window.localStorage.removeItem(USER_TOKEN);
-    setIsLogin(() => false);
+    navigate("/");
+    setIsLogin(() => {
+      return false;
+    });
   };
 
   return (
