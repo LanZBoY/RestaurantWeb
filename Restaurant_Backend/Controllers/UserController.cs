@@ -19,7 +19,30 @@ public class UserController(RestaurantContext restaurantContext, IConfiguration 
     private readonly DbSet<UserRestaurantRateModel> UserRestaurantRateTable = restaurantContext.UserRestaurantRates;
     private readonly IConfiguration _configuration = configuration;
 
-    private static readonly string UNKNOWN = "unknown";
+    // private static readonly string UNKNOWN = "unknown";
+
+    private string GetTokenByUser(UserModel user)
+    {
+
+        if (user == null) throw new Exception("User Can't not be null here");
+
+        var jwtTokenHandler = new JwtSecurityTokenHandler();
+        string secret = _configuration["JwtSetting:Secret"]!;
+        var tokenDescriptor = new SecurityTokenDescriptor
+        {
+            Subject = new ClaimsIdentity([
+                new Claim(ClaimTypes.Sid, user.Id.ToString()!),
+                new Claim(ClaimTypes.Role, user.Role!),
+                new Claim(ClaimTypes.Name, user.UserName!),
+                new Claim(ClaimTypes.Email, user.Mail!),
+            ]),
+            Expires = DateTime.UtcNow.AddMinutes(5),
+            SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(Encoding.ASCII.GetBytes(secret)), SecurityAlgorithms.HmacSha256Signature)
+        };
+        var token = jwtTokenHandler.CreateToken(tokenDescriptor);
+        var tokenString = jwtTokenHandler.WriteToken(token);
+        return tokenString;
+    }
 
     [HttpPost("Register")]
     public ActionResult<UserRegisterDTO> RegisterUser(UserRegisterDTO userdata)
@@ -33,13 +56,14 @@ public class UserController(RestaurantContext restaurantContext, IConfiguration 
             });
         }
         // start insert data into database
-        UserTable.Add(new UserModel
+        UserModel newUser = new()
         {
             UserName = userdata.UserName,
             Password = userdata.Password,
             Mail = userdata.Mail,
             Role = "User"
-        });
+        };
+        UserTable.Add(newUser);
         // excute SQL
         if (_context.SaveChanges() <= 0)
         {
@@ -49,7 +73,7 @@ public class UserController(RestaurantContext restaurantContext, IConfiguration 
             });
         }
 
-        return Created();
+        return new CreatedResult("Database", GetTokenByUser(newUser));
     }
 
     [HttpPost("Login")]
@@ -60,21 +84,8 @@ public class UserController(RestaurantContext restaurantContext, IConfiguration 
 
         if (findResult == null || findResult.Id == null || findResult.Role == null) return NotFound();
 
-        var jwtTokenHandler = new JwtSecurityTokenHandler();
-        string secret = _configuration["JwtSetting:Secret"]!;
-        var tokenDescriptor = new SecurityTokenDescriptor
-        {
-            Subject = new ClaimsIdentity([
-                new Claim(ClaimTypes.Sid, findResult.Id.ToString()),
-                new Claim(ClaimTypes.Role, findResult.Role),
-                new Claim(ClaimTypes.Name, findResult.UserName??=UNKNOWN),
-                new Claim(ClaimTypes.Email, findResult.Mail??=UNKNOWN),
-            ]),
-            Expires = DateTime.UtcNow.AddMinutes(5),
-            SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(Encoding.ASCII.GetBytes(secret)), SecurityAlgorithms.HmacSha256Signature)
-        };
-        var token = jwtTokenHandler.CreateToken(tokenDescriptor);
-        var tokenString = jwtTokenHandler.WriteToken(token);
+        string tokenString = GetTokenByUser(findResult);
+
         return Ok(tokenString);
     }
 
@@ -82,14 +93,18 @@ public class UserController(RestaurantContext restaurantContext, IConfiguration 
     [Authorize(policy: "All")]
     public ActionResult GetUser()
     {
-        if (User.Identity == null || User.Identity.Name == null)
+        UserModel user = new()
         {
-            return BadRequest("Please relogin account");
-        }
+            Id = Guid.Parse(User.FindFirstValue(ClaimTypes.Sid)!),
+            UserName = User.FindFirstValue(ClaimTypes.Name),
+            Role = User.FindFirstValue(ClaimTypes.Role),
+            Mail = User.FindFirstValue(ClaimTypes.Email),
+        };
         return Ok(new
         {
-            userName = User.FindFirstValue(ClaimTypes.Name),
-            email = User.FindFirstValue(ClaimTypes.Email),
+            user.UserName,
+            user.Mail,
+            newToken = GetTokenByUser(user)
         });
     }
 
