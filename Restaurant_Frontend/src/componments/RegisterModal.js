@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { USER_TOKEN } from "../model/UserModel.js";
 import { Button, Form, InputGroup, Modal } from "react-bootstrap";
-import { BACKEND_SEVICE_ROOT, BACKEND_SERVICE_USERS } from "../EnvVar.js";
+import { BACKEND_SEVICE_ROOT, BACKEND_SERVICE_USER } from "../EnvVar.js";
 import PropTypes from "prop-types";
 
 const RegisterModal = ({ showRegister, setShowRegister, setIsLogin }) => {
@@ -27,7 +27,7 @@ const RegisterModal = ({ showRegister, setShowRegister, setIsLogin }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log(registerUser);
-    fetch(`${BACKEND_SEVICE_ROOT}/${BACKEND_SERVICE_USERS}/Register`, {
+    fetch(`${BACKEND_SEVICE_ROOT}/${BACKEND_SERVICE_USER}/Register`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

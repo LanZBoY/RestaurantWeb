@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { BACKEND_SEVICE_ROOT, BACKEND_SERVICE_USERS } from "../EnvVar.js";
+import { BACKEND_SEVICE_ROOT, BACKEND_SERVICE_USER } from "../EnvVar.js";
 import { USER_TOKEN } from "../model/UserModel.js";
 import { NavLink } from "react-router-dom";
 import { Nav } from "react-bootstrap";
@@ -14,7 +14,7 @@ const UserInfo = ({ setIsLogin }) => {
   const navigate = useNavigate();
   useEffect(() => {
     const token = window.localStorage.getItem(USER_TOKEN);
-    fetch(`${BACKEND_SEVICE_ROOT}/${BACKEND_SERVICE_USERS}`, {
+    fetch(`${BACKEND_SEVICE_ROOT}/${BACKEND_SERVICE_USER}`, {
       headers: {
         contentType: "application/json",
         Authorization: `Bearer ${token}`,

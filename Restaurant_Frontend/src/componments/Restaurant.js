@@ -1,7 +1,12 @@
 import React, { useState } from "react";
 import { Button, Card, Col, Form, InputGroup, Modal } from "react-bootstrap";
 import PropTypes from "prop-types";
-
+import {
+  BACKEND_SERVICE_RATE,
+  BACKEND_SERVICE_USER,
+  BACKEND_SEVICE_ROOT,
+} from "../EnvVar.js";
+import { USER_TOKEN } from "../model/UserModel.js";
 const Restaurant = ({
   restaurantInfo = {
     id: "loading",
@@ -18,6 +23,32 @@ const Restaurant = ({
 
   const handleOnRatingEvent = () => {
     console.log(`your rating is ${rating}`);
+    fetch(
+      `${BACKEND_SEVICE_ROOT}/${BACKEND_SERVICE_USER}/${BACKEND_SERVICE_RATE}/${restaurantInfo.id}/${rating}`,
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${window.localStorage.getItem(USER_TOKEN)}`,
+          "Content-Type": "application/json",
+        },
+      }
+    )
+      .then((res) => {
+        switch (res.status) {
+          case 200:
+            return res.text();
+          case 201:
+            return res.json();
+          default:
+            throw Error("Unexpeted Action!");
+        }
+      })
+      .then(() => {
+        setIsShow((prev) => !prev);
+      })
+      .catch((e) => {
+        console.log(e);
+      });
   };
   return (
     <>

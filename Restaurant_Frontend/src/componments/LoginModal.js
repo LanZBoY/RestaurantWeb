@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
 import { Button, Form, InputGroup, Modal } from "react-bootstrap";
-import { BACKEND_SEVICE_ROOT, BACKEND_SERVICE_USERS } from "../EnvVar.js";
+import { BACKEND_SEVICE_ROOT, BACKEND_SERVICE_USER } from "../EnvVar.js";
 import { USER_TOKEN } from "../model/UserModel.js";
 const LoginModal = ({ showLogin, setShowLogin, setIsLogin }) => {
   const handleClose = () => {
@@ -23,7 +23,7 @@ const LoginModal = ({ showLogin, setShowLogin, setIsLogin }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    fetch(`${BACKEND_SEVICE_ROOT}/${BACKEND_SERVICE_USERS}/login`, {
+    fetch(`${BACKEND_SEVICE_ROOT}/${BACKEND_SERVICE_USER}/login`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
