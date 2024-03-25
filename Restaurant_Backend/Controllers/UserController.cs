@@ -108,6 +108,24 @@ public class UserController(RestaurantContext restaurantContext, IConfiguration 
         });
     }
 
+    [HttpGet("RateHistory")]
+    [Authorize(policy: "All")]
+    public ActionResult GetRateHistory()
+    {
+        string? uid = User.FindFirstValue(ClaimTypes.Sid);
+        if (uid == null) return NotFound();
+        var query = from ratings in UserRestaurantRateTable
+                    join restaurants in RestaurantTable on ratings.RestaurantId equals restaurants.Id
+                    where Guid.Parse(uid) == ratings.UserId
+                    select new
+                    {
+                        restaurants.Id,
+                        restaurants.Name,
+                        ratings.rating
+                    };
+        return Ok(query.ToArray());
+    }
+
     [HttpPost("Rate/{rId:guid}/{rate:float}")]
     [Authorize(policy: "All")]
     public ActionResult RateRestaurant(Guid rId, float rate)
@@ -126,13 +144,19 @@ public class UserController(RestaurantContext restaurantContext, IConfiguration 
         {
             return BadRequest("Restaurant not exsit");
         }
-
-        UserRestaurantRateTable.Add(new UserRestaurantRateModel
+        int count = UserRestaurantRateTable.Where((item) => item.UserId == uuid && item.RestaurantId == rId).Count();
+        if (count > 0)
+        {
+            UserRestaurantRateTable.Where((item) => item.UserId == uuid && item.RestaurantId == rId).ExecuteUpdate((data) => data.SetProperty(field => field.rating, rate));
+            return Ok();
+        }
+        UserRestaurantRateModel newData = new()
         {
             UserId = uuid,
             RestaurantId = rId,
             rating = rate
-        });
+        };
+        UserRestaurantRateTable.Add(newData);
         // Excute SQL Command
         if (_context.SaveChanges() <= 0)
         {
@@ -141,6 +165,25 @@ public class UserController(RestaurantContext restaurantContext, IConfiguration 
                 ErrorMessage = "Data not change"
             });
         }
-        return Ok();
+        return Created("Database", new
+        {
+            newData.RestaurantId,
+            newData.rating
+        });
     }
+
+    [HttpDelete("Rate/{rid:guid}")]
+    [Authorize(policy: "All")]
+    public ActionResult DeleteRate(Guid rid)
+    {
+        Guid uuid = Guid.Parse(User.FindFirstValue(ClaimTypes.Sid)!);
+
+        int count = UserRestaurantRateTable.Where((item) => item.UserId == uuid && item.RestaurantId == rid).ExecuteDelete();
+        return Ok(new
+        {
+            count
+        });
+    }
+
+
 }

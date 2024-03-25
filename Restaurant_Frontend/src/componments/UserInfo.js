@@ -24,7 +24,6 @@ const UserInfo = ({ setIsLogin }) => {
         return res.json();
       })
       .then((userInfo) => {
-        console.log(userInfo);
         window.localStorage.setItem(USER_TOKEN, userInfo.newToken);
         setUserInfo(() => userInfo);
       })

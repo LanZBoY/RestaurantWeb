@@ -10,7 +10,7 @@ const Restaurant = ({
     desc: "loading",
   },
 }) => {
-  const [rating, setRating] = useState(0);
+  const [rating, setRating] = useState(2.5);
   const [isShow, setIsShow] = useState(false);
   const showDetailInfo = () => {
     setIsShow((prev) => !prev);

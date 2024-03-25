@@ -49,7 +49,6 @@ const LoginModal = ({ showLogin, setShowLogin, setIsLogin }) => {
         setShowLogin(() => false);
       })
       .catch((e) => {
-        console.log(e.message);
         setHintMessage(() => e.message);
       });
   };
