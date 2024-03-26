@@ -3,10 +3,17 @@ import { USER_TOKEN } from "../model/UserModel.js";
 import { Button, Form, InputGroup, Modal } from "react-bootstrap";
 import { BACKEND_SEVICE_ROOT, BACKEND_SERVICE_USER } from "../EnvVar.js";
 import PropTypes from "prop-types";
+import { useDispatch, useSelector } from "react-redux";
+import { changeLoginState, hideRegisterModal } from "../slice.js";
 
-const RegisterModal = ({ showRegister, setShowRegister, setIsLogin }) => {
+const RegisterModal = () => {
+  const dispatch = useDispatch();
+  const showRegisterModal = useSelector(
+    (state) => state.ModalState.RegisterModal
+  );
   const handleClose = () => {
-    setShowRegister(() => false);
+    dispatch(changeLoginState());
+    dispatch(hideRegisterModal());
     setRegisterUser(() => {
       return {
         userName: "",
@@ -35,20 +42,18 @@ const RegisterModal = ({ showRegister, setShowRegister, setIsLogin }) => {
       body: JSON.stringify(registerUser),
     })
       .then((res) => {
-        console.log(res);
         return res.text();
       })
       .then((data) => {
         window.localStorage.setItem(USER_TOKEN, data);
         handleClose();
-        setIsLogin(() => true);
       })
       .catch((e) => {
         console.log(e);
       });
   };
   return (
-    <Modal show={showRegister} onHide={handleClose}>
+    <Modal show={showRegisterModal} onHide={handleClose}>
       <Modal.Header closeButton>
         <Modal.Title>註冊新帳戶</Modal.Title>
       </Modal.Header>

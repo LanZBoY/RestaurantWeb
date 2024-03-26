@@ -5,13 +5,16 @@ import { USER_TOKEN } from "../model/UserModel.js";
 import { NavLink } from "react-router-dom";
 import { Nav } from "react-bootstrap";
 import PropTypes from "prop-types";
+import { useDispatch } from "react-redux";
+import { changeLoginState, hideLoginModal } from "../slice.js";
 
-const UserInfo = ({ setIsLogin }) => {
+const UserInfo = () => {
   const [userInfo, setUserInfo] = useState({
     userName: "尚未登入",
     email: "...",
   });
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   useEffect(() => {
     const token = window.localStorage.getItem(USER_TOKEN);
     fetch(`${BACKEND_SEVICE_ROOT}/${BACKEND_SERVICE_USER}`, {
@@ -29,17 +32,16 @@ const UserInfo = ({ setIsLogin }) => {
       })
       .catch(() => {
         window.localStorage.removeItem(USER_TOKEN);
-        setIsLogin(() => false);
+        dispatch(changeLoginState());
       });
   }, []);
 
   const handleLogout = (e) => {
     e.preventDefault();
     window.localStorage.removeItem(USER_TOKEN);
+    dispatch(changeLoginState());
+    dispatch(hideLoginModal());
     navigate("/");
-    setIsLogin(() => {
-      return false;
-    });
   };
 
   return (

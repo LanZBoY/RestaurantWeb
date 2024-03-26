@@ -1,5 +1,13 @@
 import React, { useState } from "react";
-import { Button, Card, Col, Form, InputGroup, Modal } from "react-bootstrap";
+import {
+  Button,
+  Card,
+  Col,
+  Form,
+  InputGroup,
+  Modal,
+  Toast,
+} from "react-bootstrap";
 import PropTypes from "prop-types";
 import {
   BACKEND_SERVICE_RATE,
@@ -16,39 +24,47 @@ const Restaurant = ({
   },
 }) => {
   const [rating, setRating] = useState(2.5);
-  const [isShow, setIsShow] = useState(false);
+  const [modalShow, setModalShow] = useState(false);
+  const [toastShow, setToastShow] = useState(false);
   const showDetailInfo = () => {
-    setIsShow((prev) => !prev);
+    setModalShow((prev) => !prev);
   };
 
   const handleOnRatingEvent = () => {
-    console.log(`your rating is ${rating}`);
-    fetch(
-      `${BACKEND_SEVICE_ROOT}/${BACKEND_SERVICE_USER}/${BACKEND_SERVICE_RATE}/${restaurantInfo.id}/${rating}`,
-      {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${window.localStorage.getItem(USER_TOKEN)}`,
-          "Content-Type": "application/json",
-        },
-      }
-    )
-      .then((res) => {
-        switch (res.status) {
-          case 200:
-            return res.text();
-          case 201:
-            return res.json();
-          default:
-            throw Error("Unexpeted Action!");
-        }
-      })
-      .then(() => {
-        setIsShow((prev) => !prev);
-      })
-      .catch((e) => {
-        console.log(e);
-      });
+    // fetch(
+    //   `${BACKEND_SEVICE_ROOT}/${BACKEND_SERVICE_USER}/${BACKEND_SERVICE_RATE}/${restaurantInfo.id}/${rating}`,
+    //   {
+    //     method: "POST",
+    //     headers: {
+    //       Authorization: `Bearer ${window.localStorage.getItem(USER_TOKEN)}`,
+    //       "Content-Type": "application/json",
+    //     },
+    //   }
+    // )
+    //   .then((res) => {
+    //     switch (res.status) {
+    //       case 200:
+    //         return res.text();
+    //       case 201:
+    //         return res.json();
+    //       default:
+    //         throw Error("Unexpeted Action!");
+    //     }
+    //   })
+    //   .then(() => {
+    //     setIsShow((prev) => !prev);
+    //   })
+    //   .catch((e) => {
+    //     console.log(e);
+    //   });
+    const promise = new Promise((resolve) => {
+      resolve(`your rating is ${rating}`);
+    });
+    promise.then((value) => {
+      console.log(value);
+      setModalShow((prev) => !prev);
+      setToastShow(() => true);
+    });
   };
   return (
     <>
@@ -68,7 +84,7 @@ const Restaurant = ({
           </Card.Body>
         </Card>
       </Col>
-      <Modal show={isShow} onHide={showDetailInfo} size="lg">
+      <Modal show={modalShow} onHide={showDetailInfo} size="lg">
         <Modal.Header closeButton>{restaurantInfo.name}</Modal.Header>
         <Modal.Body>{restaurantInfo.desc}</Modal.Body>
         <Modal.Footer>

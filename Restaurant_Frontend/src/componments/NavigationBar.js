@@ -7,19 +7,17 @@ import {
   Button,
   InputGroup,
 } from "react-bootstrap";
-import { USER_TOKEN } from "../model/UserModel.js";
 import { NavLink } from "react-router-dom";
 import RegisterModal from "./RegisterModal.js";
 import LoginModal from "./LoginModal.js";
 import PropTypes from "prop-types";
 import UserInfo from "./UserInfo.js";
+import { showLoginModal, showRegisterModal } from "../slice.js";
+import { useDispatch, useSelector } from "react-redux";
 
 const NavigationBar = ({ showSearchBar, searchString, setSearchString }) => {
-  const [showRegister, setShowRegister] = useState(false);
-  const [showLogin, setShowLogin] = useState(false);
-  const [isLogin, setIsLogin] = useState(() => {
-    return window.localStorage.getItem(USER_TOKEN) === null ? false : true;
-  });
+  const dispatch = useDispatch();
+  const loginState = useSelector((state) => state.UserState);
   return (
     <>
       <Navbar variant="dark" bg="primary" sticky="top">
@@ -46,30 +44,25 @@ const NavigationBar = ({ showSearchBar, searchString, setSearchString }) => {
               </InputGroup>
             </Form>
           ) : undefined}
-          {isLogin ? (
-            <UserInfo setIsLogin={setIsLogin} />
+          {loginState.login ? (
+            <UserInfo />
           ) : (
             <>
               <Button
                 variant="success"
                 className="me-2"
-                onClick={() => setShowRegister(!showRegister)}
+                onClick={() => dispatch(showRegisterModal())}
               >
                 註冊
               </Button>
-              <Button variant="success" onClick={() => setShowLogin(true)}>
+              <Button
+                variant="success"
+                onClick={() => dispatch(showLoginModal())}
+              >
                 登入
               </Button>
-              <RegisterModal
-                showRegister={showRegister}
-                setShowRegister={setShowRegister}
-                setIsLogin={setIsLogin}
-              />
-              <LoginModal
-                showLogin={showLogin}
-                setShowLogin={setShowLogin}
-                setIsLogin={setIsLogin}
-              />
+              <RegisterModal />
+              <LoginModal />
             </>
           )}
         </Container>

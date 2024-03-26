@@ -3,9 +3,14 @@ import PropTypes from "prop-types";
 import { Button, Form, InputGroup, Modal } from "react-bootstrap";
 import { BACKEND_SEVICE_ROOT, BACKEND_SERVICE_USER } from "../EnvVar.js";
 import { USER_TOKEN } from "../model/UserModel.js";
-const LoginModal = ({ showLogin, setShowLogin, setIsLogin }) => {
+import { useDispatch, useSelector } from "react-redux";
+import { changeLoginState, hideLoginModal } from "../slice.js";
+const LoginModal = () => {
+  const dispatch = useDispatch();
+  const showLoginModal = useSelector((state) => state.ModalState.LoginModal);
   const handleClose = () => {
-    setShowLogin(!showLogin);
+    dispatch(changeLoginState());
+    dispatch(hideLoginModal());
     setLoginInfo({
       userName: "",
       password: "",
@@ -41,12 +46,9 @@ const LoginModal = ({ showLogin, setShowLogin, setIsLogin }) => {
       })
       .then((data) => {
         window.localStorage.setItem(USER_TOKEN, data);
-        const userToken = window.localStorage.getItem(USER_TOKEN);
-        return userToken === null ? false : true;
       })
-      .then((loginResult) => {
-        setIsLogin(() => loginResult);
-        setShowLogin(() => false);
+      .then(() => {
+        handleClose();
       })
       .catch((e) => {
         setHintMessage(() => e.message);
@@ -54,7 +56,7 @@ const LoginModal = ({ showLogin, setShowLogin, setIsLogin }) => {
   };
 
   return (
-    <Modal show={showLogin} onHide={handleClose}>
+    <Modal show={showLoginModal} onHide={handleClose}>
       <Modal.Header closeButton>
         <Modal.Title>登入</Modal.Title>
       </Modal.Header>
