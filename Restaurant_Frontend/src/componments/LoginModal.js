@@ -4,7 +4,7 @@ import { Button, Form, InputGroup, Modal } from "react-bootstrap";
 import { BACKEND_SEVICE_ROOT, BACKEND_SERVICE_USER } from "../EnvVar.js";
 import { USER_TOKEN } from "../model/UserModel.js";
 import { useDispatch, useSelector } from "react-redux";
-import { changeLoginState, hideLoginModal } from "../slice.js";
+import { changeLoginState, hideLoginModal } from "../store/slice.js";
 const LoginModal = () => {
   const dispatch = useDispatch();
   const showLoginModal = useSelector((state) => state.ModalState.LoginModal);

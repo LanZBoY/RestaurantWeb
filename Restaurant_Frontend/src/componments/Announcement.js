@@ -15,10 +15,12 @@ const Announcement = () => {
                 src="https://placehold.co/600x200/?text=Image"
                 className="mb-3"
               ></Card.Img>
-              <Card.Title className="fs-4 mb-3">標題</Card.Title>
-              <Card.Text className="fs-5 mb-3">內容</Card.Text>
+              <Card.Title className="fs-4 mb-3">全新評餐廳來囉！</Card.Title>
+              <Card.Text className="fs-5 mb-3">功能尚未完成</Card.Text>
             </Card.Body>
-            <Card.Footer className="text-muted">時間</Card.Footer>
+            <Card.Footer className="text-muted">
+              {new Date().toLocaleString()}
+            </Card.Footer>
           </Card>
         </Col>
       </Row>

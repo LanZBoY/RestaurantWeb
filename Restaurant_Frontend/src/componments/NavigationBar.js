@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import {
   Container,
   Form,
@@ -12,10 +12,14 @@ import RegisterModal from "./RegisterModal.js";
 import LoginModal from "./LoginModal.js";
 import PropTypes from "prop-types";
 import UserInfo from "./UserInfo.js";
-import { showLoginModal, showRegisterModal } from "../slice.js";
+import { showLoginModal, showRegisterModal } from "../store/slice.js";
 import { useDispatch, useSelector } from "react-redux";
 
-const NavigationBar = ({ showSearchBar, searchString, setSearchString }) => {
+const NavigationBar = ({
+  showSearchBar = false,
+  searchString,
+  setSearchString,
+}) => {
   const dispatch = useDispatch();
   const loginState = useSelector((state) => state.UserState);
   return (
@@ -31,7 +35,7 @@ const NavigationBar = ({ showSearchBar, searchString, setSearchString }) => {
               列表
             </NavLink>
           </Nav>
-          {showSearchBar === true ? (
+          {showSearchBar ? (
             <Form className="me-auto w-50">
               <InputGroup>
                 <Form.Control

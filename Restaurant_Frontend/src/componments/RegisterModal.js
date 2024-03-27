@@ -4,7 +4,7 @@ import { Button, Form, InputGroup, Modal } from "react-bootstrap";
 import { BACKEND_SEVICE_ROOT, BACKEND_SERVICE_USER } from "../EnvVar.js";
 import PropTypes from "prop-types";
 import { useDispatch, useSelector } from "react-redux";
-import { changeLoginState, hideRegisterModal } from "../slice.js";
+import { changeLoginState, hideRegisterModal } from "../store/slice.js";
 
 const RegisterModal = () => {
   const dispatch = useDispatch();

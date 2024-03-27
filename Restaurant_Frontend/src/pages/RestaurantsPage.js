@@ -4,6 +4,7 @@ import NavigationBar from "../componments/NavigationBar.js";
 import Restaurant from "../componments/Restaurant.js";
 import { Container, Row, Col, Card, Placeholder } from "react-bootstrap";
 import { BACKEND_SEVICE_ROOT, BACKEND_SERVICE_RESTAURANTS } from "../EnvVar.js";
+import RestaurantDetail from "../componments/RestaurantDetail.js";
 const RestaurantsPage = () => {
   const [restaurantsInfo, setRestaurantsInfo] = useState([]);
   const [searchString, setSearchString] = useState("");
@@ -21,6 +22,41 @@ const RestaurantsPage = () => {
         console.log(e);
       });
   }, [searchString]);
+
+  const restaurantsInfoView = isLoading
+    ? Array(3)
+        .fill(0)
+        .map((v, i) => {
+          return (
+            <Col lg={4} key={i}>
+              <Card>
+                <Card.Img
+                  variant="top"
+                  height={300}
+                  src="https://placehold.co/600x400?text=NoImage"
+                />
+                <Card.Body>
+                  <Placeholder as={Card.Title} animation="glow">
+                    <Placeholder xs={6} />
+                  </Placeholder>
+                  <Placeholder as={Card.Text} animation="glow">
+                    <Placeholder xs={7} /> <Placeholder xs={4} />{" "}
+                    <Placeholder xs={4} /> <Placeholder xs={6} />{" "}
+                    <Placeholder xs={8} />
+                  </Placeholder>
+                </Card.Body>
+              </Card>
+            </Col>
+          );
+        })
+    : restaurantsInfo.map((restaurantInfo) => {
+        if (!restaurantInfo.img) {
+          restaurantInfo.img = "https://placehold.co/600x400?text=NoImage";
+        }
+        return (
+          <Restaurant key={restaurantInfo.id} restaurantInfo={restaurantInfo} />
+        );
+      });
   return (
     <>
       <NavigationBar
@@ -29,47 +65,9 @@ const RestaurantsPage = () => {
         setSearchString={setSearchString}
       />
       <Container>
-        <Row className="mt-2">
-          {isLoading
-            ? Array(3)
-                .fill(0)
-                .map((v, i) => {
-                  return (
-                    <Col lg={4} key={i}>
-                      <Card>
-                        <Card.Img
-                          variant="top"
-                          height={300}
-                          src="https://placehold.co/600x400?text=NoImage"
-                        />
-                        <Card.Body>
-                          <Placeholder as={Card.Title} animation="glow">
-                            <Placeholder xs={6} />
-                          </Placeholder>
-                          <Placeholder as={Card.Text} animation="glow">
-                            <Placeholder xs={7} /> <Placeholder xs={4} />{" "}
-                            <Placeholder xs={4} /> <Placeholder xs={6} />{" "}
-                            <Placeholder xs={8} />
-                          </Placeholder>
-                        </Card.Body>
-                      </Card>
-                    </Col>
-                  );
-                })
-            : restaurantsInfo.map((restaurantInfo) => {
-                if (!restaurantInfo.img) {
-                  restaurantInfo.img =
-                    "https://placehold.co/600x400?text=NoImage";
-                }
-                return (
-                  <Restaurant
-                    key={restaurantInfo.id}
-                    restaurantInfo={restaurantInfo}
-                  />
-                );
-              })}
-        </Row>
+        <Row className="mt-2">{restaurantsInfoView}</Row>
       </Container>
+      <RestaurantDetail />
     </>
   );
 };

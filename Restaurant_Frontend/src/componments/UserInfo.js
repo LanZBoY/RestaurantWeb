@@ -6,7 +6,7 @@ import { NavLink } from "react-router-dom";
 import { Nav } from "react-bootstrap";
 import PropTypes from "prop-types";
 import { useDispatch } from "react-redux";
-import { changeLoginState, hideLoginModal } from "../slice.js";
+import { changeLoginState } from "../store/slice.js";
 
 const UserInfo = () => {
   const [userInfo, setUserInfo] = useState({
@@ -32,6 +32,7 @@ const UserInfo = () => {
       })
       .catch(() => {
         window.localStorage.removeItem(USER_TOKEN);
+        navigate("/");
         dispatch(changeLoginState());
       });
   }, []);
@@ -40,8 +41,6 @@ const UserInfo = () => {
     e.preventDefault();
     window.localStorage.removeItem(USER_TOKEN);
     dispatch(changeLoginState());
-    dispatch(hideLoginModal());
-    navigate("/");
   };
 
   return (
