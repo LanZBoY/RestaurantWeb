@@ -1,16 +1,27 @@
 import React, { useEffect, useState } from "react";
 import NavigationBar from "../componments/NavigationBar.js";
-import { Container, Row, Col, Card, Button, InputGroup } from "react-bootstrap";
+import { Container } from "react-bootstrap";
 import {
   BACKEND_SEVICE_ROOT,
   BACKEND_SERVICE_USER,
   BACKEND_SERVICE_RATE_HISTORY,
 } from "../EnvVar.js";
 import { USER_TOKEN } from "../model/UserModel.js";
+import RateHistory from "../componments/RateHistory.js";
+import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { addMessage } from "../store/slice.js";
+import { UnloginMessage } from "../utils.js";
 
 const RatesPage = () => {
   const [rateHistory, setRateHistory] = useState([]);
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
   useEffect(() => {
+    if (window.localStorage.getItem(USER_TOKEN) == null) {
+      dispatch(addMessage(UnloginMessage));
+      navigate("/");
+    }
     fetch(
       `${BACKEND_SEVICE_ROOT}/${BACKEND_SERVICE_USER}/${BACKEND_SERVICE_RATE_HISTORY}`,
       {
@@ -35,37 +46,12 @@ const RatesPage = () => {
         console.log(e);
       });
   }, []);
-  console.log(rateHistory);
   return (
     <>
       <NavigationBar />
       <Container>
         {rateHistory.map((item) => {
-          console.log(item);
-          return (
-            <>
-              <Row>
-                <Card>
-                  <Card.Body>
-                    <Row>
-                      <Col lg={3}>
-                        <Card.Text>{item.name}</Card.Text>
-                      </Col>
-                      <Col lg={3}>
-                        <Card.Text>{item.rating}分</Card.Text>
-                      </Col>
-                      <Col lg={6}>
-                        <InputGroup className="justify-content-end">
-                          <Button variant="success">修改</Button>
-                          <Button variant="danger">刪除</Button>
-                        </InputGroup>
-                      </Col>
-                    </Row>
-                  </Card.Body>
-                </Card>
-              </Row>
-            </>
-          );
+          return <RateHistory key={item.id} rateInfo={item} />;
         })}
       </Container>
     </>

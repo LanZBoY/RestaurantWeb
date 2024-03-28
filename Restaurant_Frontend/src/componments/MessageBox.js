@@ -37,6 +37,7 @@ const Message = ({ index, data }) => {
   }, []);
   return (
     <Toast
+      className="shadow border-secondary"
       show={show}
       onClose={() => {
         setShow(() => false);

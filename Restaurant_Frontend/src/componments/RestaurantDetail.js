@@ -12,6 +12,7 @@ import {
   BACKEND_SERVICE_RATE,
   BACKEND_SERVICE_USER,
 } from "../EnvVar.js";
+import { UnloginMessage } from "../utils.js";
 const RestaurantDetail = () => {
   const ratingRef = useRef(2.5);
   const modalState = useSelector((state) => state.RestaurantModalState.show);
@@ -23,13 +24,7 @@ const RestaurantDetail = () => {
     const rating = ratingRef.current.value;
     if (!window.localStorage.getItem(USER_TOKEN)) {
       dispatch(showLoginModal());
-      dispatch(
-        addMessage({
-          title: "你尚未登入",
-          message: "先登入後才可以評分",
-          duration: 5000,
-        })
-      );
+      dispatch(addMessage(UnloginMessage));
       return;
     }
     fetch(
