@@ -1,35 +1,55 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Row, Col, Card, Button, Form } from "react-bootstrap";
 
 import PropTypes from "prop-types";
-import { RateRestaurant } from "../utils.js";
+import { getRateInfo, rateRestaurant } from "../utils.js";
 import { useDispatch } from "react-redux";
 import { addMessage } from "../store/slice.js";
 
-const RateHistory = ({ rateInfo }) => {
-  const [newRating, setNewRating] = useState(rateInfo.rating);
+const RateHistory = ({ rid }) => {
+  const [rateInfo, setRateInfo] = useState(() => {
+    return { name: "", rating: 0.0 };
+  });
+  const [preRating, setPreRating] = useState(2.5);
   const [hidden, setHidden] = useState(true);
   const dispatch = useDispatch();
 
+  useEffect(() => {
+    getRateInfo(rid)
+      .then((res) => {
+        return res.json();
+      })
+      .then((fetchRateInfo) => {
+        setRateInfo(() => fetchRateInfo);
+        setPreRating(() => fetchRateInfo.rating);
+      });
+  }, []);
+
   const handleRange = (e) => {
-    setNewRating(() => e.target.value);
+    setPreRating(() => e.target.value);
     setHidden(() => false);
   };
 
   const handleReset = () => {
-    setNewRating(() => rateInfo.rating);
+    setPreRating(() => rateInfo.rating);
     setHidden(() => true);
   };
 
   const handleApply = () => {
-    RateRestaurant(rateInfo.id, newRating).then((res) => {
+    rateRestaurant(rid, preRating).then((res) => {
       switch (res.status) {
         case 200:
           setHidden(() => true);
+          setRateInfo(() => {
+            return {
+              ...rateInfo,
+              rating: preRating,
+            };
+          });
           dispatch(
             addMessage({
               title: "修改成功！",
-              message: `你以將${rateInfo.name}修改至${newRating}`,
+              message: `你以將${rateInfo.name}修改至${preRating}`,
               duration: 3000,
             })
           );
@@ -56,14 +76,17 @@ const RateHistory = ({ rateInfo }) => {
                 lg={3}
                 className="d-inline-flex align-items-center justify-content-center"
               >
-                <Card.Text>{newRating}分</Card.Text>
+                <Card.Text>
+                  {rateInfo.rating}分
+                  {rateInfo.rating == preRating ? "" : ` -> ${preRating}分`}
+                </Card.Text>
               </Col>
               <Col lg={3}>
                 <Form.Label>評分</Form.Label>
                 <Form.Range
                   min={0}
                   max={5}
-                  value={newRating}
+                  value={preRating}
                   step={0.01}
                   onChange={handleRange}
                 ></Form.Range>
@@ -98,7 +121,7 @@ const RateHistory = ({ rateInfo }) => {
 };
 
 RateHistory.propTypes = {
-  rateInfo: PropTypes.object,
+  rid: PropTypes.string,
 };
 
 export default RateHistory;

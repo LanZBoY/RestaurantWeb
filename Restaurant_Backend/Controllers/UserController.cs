@@ -108,9 +108,9 @@ public class UserController(RestaurantContext restaurantContext, IConfiguration 
         });
     }
 
-    [HttpGet("RateHistory")]
+    [HttpGet("RateHistorys")]
     [Authorize(policy: "All")]
-    public ActionResult GetRateHistory()
+    public ActionResult GetRateHistorys()
     {
         string? uid = User.FindFirstValue(ClaimTypes.Sid);
         if (uid == null) return NotFound();
@@ -119,11 +119,25 @@ public class UserController(RestaurantContext restaurantContext, IConfiguration 
                     where Guid.Parse(uid) == ratings.UserId
                     select new
                     {
-                        restaurants.Id,
+                        restaurants.Id
+                    };
+        return Ok(query.ToArray());
+    }
+
+    [HttpGet("RateHistorys/{rid:guid}")]
+    public ActionResult GetRateHistory(Guid rid)
+    {
+        string? uid = User.FindFirstValue(ClaimTypes.Sid);
+        if (uid == null) return NotFound();
+        var query = from ratings in UserRestaurantRateTable
+                    join restaurants in RestaurantTable on ratings.RestaurantId equals restaurants.Id
+                    where Guid.Parse(uid) == ratings.UserId && rid == restaurants.Id
+                    select new
+                    {
                         restaurants.Name,
                         ratings.rating
                     };
-        return Ok(query.ToArray());
+        return Ok(query.FirstOrDefault());
     }
 
     [HttpPost("Rate/{rId:guid}/{rate:float}")]

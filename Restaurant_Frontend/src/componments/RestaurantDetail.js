@@ -12,7 +12,7 @@ import {
   BACKEND_SERVICE_RATE,
   BACKEND_SERVICE_USER,
 } from "../EnvVar.js";
-import { RateRestaurant, UnloginMessage } from "../utils.js";
+import { rateRestaurant, UnloginMessage } from "../utils.js";
 const RestaurantDetail = () => {
   const ratingRef = useRef(2.5);
   const modalState = useSelector((state) => state.RestaurantModalState.show);
@@ -27,7 +27,7 @@ const RestaurantDetail = () => {
       dispatch(addMessage(UnloginMessage));
       return;
     }
-    RateRestaurant(restaurantInfo.id, rating)
+    rateRestaurant(restaurantInfo.id, rating)
       .then((res) => {
         switch (res.status) {
           case 200:

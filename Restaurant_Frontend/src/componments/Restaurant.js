@@ -19,7 +19,6 @@ const Restaurant = ({
       <Col lg={4} className="mt-3">
         <Card
           onClick={() => {
-            console.log(restaurantInfo);
             dispatch(showRestaurantInfo(restaurantInfo));
           }}
         >
