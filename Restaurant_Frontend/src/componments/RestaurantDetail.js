@@ -12,7 +12,7 @@ import {
   BACKEND_SERVICE_RATE,
   BACKEND_SERVICE_USER,
 } from "../EnvVar.js";
-import { UnloginMessage } from "../utils.js";
+import { RateRestaurant, UnloginMessage } from "../utils.js";
 const RestaurantDetail = () => {
   const ratingRef = useRef(2.5);
   const modalState = useSelector((state) => state.RestaurantModalState.show);
@@ -27,16 +27,7 @@ const RestaurantDetail = () => {
       dispatch(addMessage(UnloginMessage));
       return;
     }
-    fetch(
-      `${BACKEND_SEVICE_ROOT}/${BACKEND_SERVICE_USER}/${BACKEND_SERVICE_RATE}/${restaurantInfo.id}/${rating}`,
-      {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${window.localStorage.getItem(USER_TOKEN)}`,
-          "Content-Type": "application/json",
-        },
-      }
-    )
+    RateRestaurant(restaurantInfo.id, rating)
       .then((res) => {
         switch (res.status) {
           case 200:
