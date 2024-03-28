@@ -50,8 +50,8 @@ const RatesPage = () => {
     <>
       <NavigationBar />
       <Container>
-        {rateHistory.map((data) => {
-          return <RateHistory key={data.id} rid={data.id} />;
+        {rateHistory.map((rid) => {
+          return <RateHistory key={rid} rid={rid} />;
         })}
       </Container>
     </>

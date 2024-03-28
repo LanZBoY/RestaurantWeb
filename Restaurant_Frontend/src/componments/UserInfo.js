@@ -41,6 +41,7 @@ const UserInfo = () => {
     e.preventDefault();
     window.localStorage.removeItem(USER_TOKEN);
     dispatch(changeLoginState());
+    navigate(0);
   };
 
   return (

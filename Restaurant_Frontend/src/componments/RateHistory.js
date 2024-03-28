@@ -49,7 +49,7 @@ const RateHistory = ({ rid }) => {
           dispatch(
             addMessage({
               title: "修改成功！",
-              message: `你以將${rateInfo.name}修改至${preRating}`,
+              message: `你以將${rateInfo.name}修改至${preRating}分`,
               duration: 3000,
             })
           );

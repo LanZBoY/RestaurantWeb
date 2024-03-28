@@ -117,10 +117,7 @@ public class UserController(RestaurantContext restaurantContext, IConfiguration 
         var query = from ratings in UserRestaurantRateTable
                     join restaurants in RestaurantTable on ratings.RestaurantId equals restaurants.Id
                     where Guid.Parse(uid) == ratings.UserId
-                    select new
-                    {
-                        restaurants.Id
-                    };
+                    select restaurants.Id;
         return Ok(query.ToArray());
     }
 
@@ -186,7 +183,7 @@ public class UserController(RestaurantContext restaurantContext, IConfiguration 
         });
     }
 
-    [HttpDelete("Rate/{rid:guid}")]
+    [HttpDelete("RateHistorys/{rid:guid}")]
     [Authorize(policy: "All")]
     public ActionResult DeleteRate(Guid rid)
     {
