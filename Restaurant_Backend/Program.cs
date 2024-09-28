@@ -9,6 +9,7 @@ using Restaurant.Models;
 var builder = WebApplication.CreateBuilder(args);
 var config = builder.Configuration;
 
+
 string defaultCorsPolicy = "default";
 
 builder.Services.AddCors(option =>
